@@ -40,9 +40,7 @@ private:
         if(isDetermine()!=-1) //如果当前棋子已经确定
             return; //不再处理
         {
-            float sum=0;
-            for(float i : prob)
-                sum+=i;
+            float sum=this->sum();
             float d=1/sum;
             //对prob的所有维度减去d
             for(int i=0;i<junqi+1;i++)
@@ -56,6 +54,14 @@ public:
     int y;
     bool isDie=false;
     array<float,12>prob;
+
+    float sum()
+    {
+        float sum=0;
+        for(float i : prob)
+            sum+=i;
+        return sum;
+    }
 
     void equ(int type) //该棋子与某棋同尽（也就是被吃了）
     {
@@ -78,6 +84,9 @@ public:
 
     void more(int type) //设定该棋子大于某棋
     {
+        prob[junqi]=0;
+        prob[zhadan]=0;
+
         if(type==zhadan) //不可能吃掉炸弹
             return;
         if(type==siling)
@@ -125,7 +134,7 @@ public:
     int isDetermine() //返回当前棋子的确定类型，-1为不确定
     {
         int type=-1;
-        for(int i=0;i<prob.size();i++)
+        for(unsigned int i=0;i<prob.size();i++)
         {
             if(type==-1 && prob[i]!=0)
                 type=i;
