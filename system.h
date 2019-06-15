@@ -23,12 +23,28 @@ public:
     }
 };
 
-stack<moveRecord>allRecord;
+class recordStack
+{
+public:
+    static stack<moveRecord>allRecord;
+    static void push(int x1,int y1,int x2,int y2) { allRecord.push(moveRecord(x1,y1,x2,y2)); }
+    static void pop()
+    {
+        allRecord.top().back();
+        allRecord.pop();
+    }
+    static void popAll()
+    {
+        while(allRecord.empty()==false)
+            pop();
+    }
+};
+
 
 //模拟移动棋子，返回结果（0己方被对方吃，1对方被己方吃，2对死，3己方移动）
 int simulateMove(int x1,int y1,int x2,int y2)
 {
-    allRecord.push(moveRecord(x1,y1,x2,y2)); //记录这步棋
+    recordStack::push(x1,y1,x2,y2);
     //移动的合法性由策略判别，这里直接进行实际的移动操作
     char &newPos=cMap[y2][x2];
     char &myChess=cMap[y1][x1];
