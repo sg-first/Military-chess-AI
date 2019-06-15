@@ -1,6 +1,7 @@
 #include "basic.h"
 #include "help.h"
 #include "reasoning.h"
+#include "system.h"
 
 /* ************************************************************************ */
 /* 函数功能：根据裁判反馈刷新棋盘（完成）										*/
@@ -150,56 +151,61 @@ string CulArray(char *cInMessage,int &iFirst,int &iTime,int &iStep)
         return "ARRAY cbacddeeffggghhhiiijjkklj";
 }
 
-/* ************************************************************************ */
-/* 函数功能：计算己方最佳着法(本程序为示例算法,请参赛选手自行改进算法)          	*/
-/* 接口参数：																*/
-/*     char *cInMessage 来自裁判的 GO 命令									*/
-/* ************************************************************************ */
-string CulBestmove(char *cInMessage)
+moveRecord gongzu()
 {
-    string cOutMessage="BESTMOVE A0A0";
+    int x1,y1,x2,y2;
     for(int i=0;i<12;i++)
     {
         for(int j=0;j<5;j++)
         {
+            y1=i;x1=j;y2=i;x2=j;
             if(IsMyMovingChess(i,j) && !IsBaseCamp(i,j))  //己方不在大本营的可移动棋子
             {
                 //可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
                 if(i>0 && !IsAfterHill(i,j) && !IsMyChess(i-1,j) && !IsFilledCamp(i-1,j))
                 {
-                    cOutMessage[9]=i+'A';
-                    cOutMessage[10]=j+'0';
-                    cOutMessage[11]=(i-1)+'A';
-                    cOutMessage[12]=j+'0';
-                    return cOutMessage;
+                    y2=i-1;
+                    return moveRecord(x1,y1,x2,y2);
                 }
                 else
                 {
                     //可以左移:不在最左列,左侧不是己方棋子,左侧不是被占用的行营
                     if(j>0 && !IsMyChess(i,j-1) && !IsFilledCamp(i,j-1))
                     {
-                        cOutMessage[9]=i+'A';
-                        cOutMessage[10]=j+'0';
-                        cOutMessage[11]=i+'A';
-                        cOutMessage[12]=(j-1)+'0';
-                        return cOutMessage;
+                        x2=j-1;
+                        return moveRecord(x1,y1,x2,y2);
                     }
                     else
                     {
                         //可以右移://不在最右列,右侧不是己方棋子,右侧不是被占用的行营
                         if(j<4 && !IsMyChess(i,j+1) && !IsFilledCamp(i,j+1))
                         {
-                            cOutMessage[9]=i+'A';
-                            cOutMessage[10]=j+'0';
-                            cOutMessage[11]=i+'A';
-                            cOutMessage[12]=(j+1)+'0';
-                            return cOutMessage;
+                            x2=j+1;
+                            return moveRecord(x1,y1,x2,y2);
                         }
                     }
                 }
             }
         }
     }
+}
+
+/* ************************************************************************ */
+/* 函数功能：计算己方最佳着法(本程序为示例算法,请参赛选手自行改进算法)          	*/
+/* 接口参数：																*/
+/*     char *cInMessage 来自裁判的 GO 命令									*/
+/* ************************************************************************ */
+string CulBestmove()
+{
+    string cOutMessage="BESTMOVE A0A0";
+
+    moveRecord best=gongzu();
+
+    cOutMessage[9]=best.y1+'A';
+    cOutMessage[10]=best.x1+'0';
+    cOutMessage[11]=best.y2+'A';
+    cOutMessage[12]=best.x2+'0';
+    return cOutMessage;
 }
 
 int main()
