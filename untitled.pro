@@ -8,4 +8,6 @@ SOURCES += main.cpp
 HEADERS += \
     help.h \
     reasoning.h \
-    basic.h
+    basic.h \
+    system.h \
+    assess.h
