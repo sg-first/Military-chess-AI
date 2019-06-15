@@ -3,23 +3,20 @@
 #include <array>
 using namespace std;
 
-const int siling=8;
-const int junzhang=7;
-const int shizhang=6;
-const int lvzhang=5;
-const int tuanzhang=4;
-const int yingzhang=3;
-const int lianzhang=2;
-const int paizhang=1;
-const int gongbing=0;
-#define all 9
-const int dilei=9;
-const int zhadan=10;
-const int junqi=11;
-
-//暗棋推理：得为对方的每个子确定ID
-//对方每个子ID=初始x+初始y
-//查询需要的是：从目前位置查ID，从ID确定概率分布
+const int siling=9;
+const int junzhang=8;
+const int shizhang=7;
+const int lvzhang=6;
+const int tuanzhang=5;
+const int yingzhang=4;
+const int lianzhang=3;
+const int paizhang=2;
+const int gongbing=1;
+const int junqi=0;
+#define ALL 9
+const int dilei=10;
+const int zhadan=11;
+#define SIZE 12
 
 class enemyChess;
 
@@ -43,13 +40,13 @@ private:
             float sum=this->sum();
             float d=1/sum;
             //对prob的所有维度减去d
-            for(int i=0;i<junqi+1;i++)
+            for(int i=0;i<SIZE;i++)
                 changeProbNum(i,d);
         }
     }
 
 public:
-    enemyChess(int x,int y) : x(x),y(y) { this->prob={3,3,3,2,2,2,2,1,1,3,2,1}; }
+    enemyChess(int x,int y) : x(x),y(y) { this->prob={1,3,3,3,2,2,2,2,1,1,3,2}; }
     int x;
     int y;
     bool isDie=false;
@@ -77,14 +74,13 @@ public:
         setDie();
         if(type!=dilei && type!=zhadan) //不支持小于地雷炸弹
         {
-            for(int i=all-1;i>type;i--)
+            for(int i=ALL;i>type;i--)
                 prob[i]=0; //把大于type的所有概率分清零
         }
     }
 
     void more(int type) //设定该棋子大于某棋
     {
-        prob[junqi]=0;
         prob[zhadan]=0;
 
         if(type==zhadan) //不可能吃掉炸弹

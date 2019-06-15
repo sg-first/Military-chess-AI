@@ -162,10 +162,10 @@ string CulBestmove(char *cInMessage)
     {
         for(int j=0;j<5;j++)
         {
-            if(IsMyMovingChess(cMap,i,j) && !IsBaseCamp(i,j))  //己方不在大本营的可移动棋子
+            if(IsMyMovingChess(i,j) && !IsBaseCamp(i,j))  //己方不在大本营的可移动棋子
             {
                 //可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
-                if(i>0 && !IsAfterHill(i,j) && !IsMyChess(cMap,i-1,j) && !IsFilledCamp(cMap,i-1,j))
+                if(i>0 && !IsAfterHill(i,j) && !IsMyChess(i-1,j) && !IsFilledCamp(i-1,j))
                 {
                     cOutMessage[9]=i+'A';
                     cOutMessage[10]=j+'0';
@@ -176,7 +176,7 @@ string CulBestmove(char *cInMessage)
                 else
                 {
                     //可以左移:不在最左列,左侧不是己方棋子,左侧不是被占用的行营
-                    if(j>0 && !IsMyChess(cMap,i,j-1) && !IsFilledCamp(cMap,i,j-1))
+                    if(j>0 && !IsMyChess(i,j-1) && !IsFilledCamp(i,j-1))
                     {
                         cOutMessage[9]=i+'A';
                         cOutMessage[10]=j+'0';
@@ -187,7 +187,7 @@ string CulBestmove(char *cInMessage)
                     else
                     {
                         //可以右移://不在最右列,右侧不是己方棋子,右侧不是被占用的行营
-                        if(j<4 && !IsMyChess(cMap,i,j+1) && !IsFilledCamp(cMap,i,j+1))
+                        if(j<4 && !IsMyChess(i,j+1) && !IsFilledCamp(i,j+1))
                         {
                             cOutMessage[9]=i+'A';
                             cOutMessage[10]=j+'0';

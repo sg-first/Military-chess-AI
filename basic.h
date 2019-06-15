@@ -23,7 +23,7 @@ char cMap[12][5]; //棋盘
 /* 返回值：																	*/
 /*     1己方棋子，0空棋位或对方棋子											*/
 /* ************************************************************************ */
-int IsMyChess(char cMap[12][5],int i,int j)
+int IsMyChess(int i,int j)
 {
     if(cMap[i][j]>='a'&& cMap[i][j]<='l')
         return 1;
@@ -39,7 +39,7 @@ int IsMyChess(char cMap[12][5],int i,int j)
 /* 返回值：																	*/
 /*     1己方可移动棋子(司令,军长,...,工兵,炸弹)，0军旗,地雷,对方棋子或空棋位*/
 /* ************************************************************************ */
-int IsMyMovingChess(char cMap[12][5],int i,int j)
+int IsMyMovingChess(int i,int j)
 {
     if(cMap[i][j]>='a' && cMap[i][j]<='i' || cMap[i][j]=='k')
         return 1;
@@ -100,7 +100,7 @@ int IsBaseCamp(int i,int j)
 /* 返回值：																	*/
 /*     1有棋子占位的行营,0不是行营或是空行营								*/
 /* ************************************************************************ */
-int IsFilledCamp(char cMap[12][5],int i,int j)
+int IsFilledCamp(int i,int j)
 {
     if(IsMoveCamp(i,j) && cMap[i][j]!='0')
         return 1;
