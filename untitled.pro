@@ -9,5 +9,5 @@ HEADERS += \
     help.h \
     reasoning.h \
     basic.h \
-    system.h \
-    assess.h
+    assess.h \
+    simulate.h

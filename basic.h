@@ -11,9 +11,12 @@
 #include <iostream>
 #include <string.h>
 #include <string>
+#include <functional>
+#include "reasoning.h"
 using namespace std;
 
 char cMap[12][5]; //棋盘
+typedef function<int(int,int)> basicFun;
 
 /* ************************************************************************ */
 /* 函数功能：i,j位置是否本方棋子											*/
@@ -31,6 +34,12 @@ int IsMyChess(int i,int j)
         return 0;
 }
 
+//是否为敌方棋子
+int IsEmeChess(int i,int j)
+{
+    return cMap[i][j]=='X';
+}
+
 /* ************************************************************************ */
 /* 函数功能：i,j位置是否本方可移动的棋子									*/
 /* 接口参数：																*/
@@ -45,6 +54,21 @@ int IsMyMovingChess(int i,int j)
         return 1;
     else
         return 0;
+}
+
+//是否为敌方可移动棋子
+int IsEmeMovingChess(int i,int j)
+{
+    if(cMap[i][j]=='X')
+    {
+        enemyChess* c=ecOp::findChess(j,i);
+        int type=c->isDetermine();
+        if(type==dilei || type==junqi)
+            return 0;
+        else
+            return 1;
+    }
+    return 0;
 }
 
 /* ************************************************************************ */

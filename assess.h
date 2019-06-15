@@ -14,7 +14,7 @@ class assess
     }
 
 public:
-    static int ChessComparisons(char myc,enemyChess* enc) //比较我方与敌方棋子大小（0己方被对方吃，1对方被己方吃，2对死）
+    static int ChessComparisons(char myc,enemyChess* enc) //比较我方与敌方棋子大小（0被敌方吃，1吃掉敌方，2对死）
     {
         int mytype=ecOp::codeToSub(myc);
         int encType=enc->isDetermine();
@@ -54,11 +54,16 @@ public:
     static float getChessStrength(enemyChess* chess) //获取敌方棋子的棋力值，通过概率分布计算
     {
         float score=0;
-        for(int i=0;i<chess->prob.size();i++)
+        for(unsigned int i=0;i<chess->prob.size();i++)
         {
             float weight=assess::codeToStrength(ecOp::codeToSub(i)); //当前维度的权重
             score+=chess->prob[i]*weight;
         }
         return score/chess->sum();
+    }
+
+    static float valueEstimation(char cMap[12][5]) //局面评估
+    {
+
     }
 };

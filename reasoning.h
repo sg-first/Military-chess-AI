@@ -18,6 +18,8 @@ const int dilei=10;
 const int zhadan=11;
 #define SIZE 12
 
+#define maxDepth 10
+
 class enemyChess;
 
 vector<enemyChess*> allEnemyChess;
@@ -145,12 +147,19 @@ public:
         this->x=x;
         this->y=y;
     }
+
+    float certainty() //返回当前棋子类型评估的确定性，整体不确定性用来动态确定search_depth
+    {
+        //fix:找一个指标
+    }
 };
 
 
 class ecOp
 {
 public:
+    static int search_depth;
+
     static enemyChess* findChess(int x,int y) //给坐标找一个棋子对象
     {
         for(enemyChess* i : allEnemyChess)
@@ -163,6 +172,7 @@ public:
 
     static void init() //开局时初始化所有敌方棋子对象
     {
+        search_depth=2;
         //x为0-4，y为A-F（0-5）
         for(int i=0;i<=4;i++)
         {
@@ -207,3 +217,4 @@ public:
         return -1;
     }
 };
+int ecOp::search_depth;

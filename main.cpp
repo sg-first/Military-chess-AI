@@ -1,7 +1,11 @@
+#include <tuple>
 #include "basic.h"
 #include "help.h"
 #include "reasoning.h"
-#include "system.h"
+#include "simulate.h"
+
+typedef tuple<int,int,int,int> moveTup;
+bool isgongzu;
 
 /* ************************************************************************ */
 /* 函数功能：根据裁判反馈刷新棋盘（完成）										*/
@@ -36,6 +40,7 @@ void FreshMap(char *cInMessage,string cOutMessage)
             {
                 case 0:			//对方棋子被己方吃掉
                 {
+                    isgongzu=false;
                     enemyChess* c=ecOp::findChess(x1,y1);
                     c->less(ecOp::codeToSub(cMap[y2][x2])); //对方棋子小于己方棋子
                     cMap[y1][x1]='0'; //对方棋子消失，己方不必改变
@@ -43,6 +48,7 @@ void FreshMap(char *cInMessage,string cOutMessage)
                 }
                 case 1:			//对方吃掉己方棋子
                 {
+                    isgongzu=false;
                     enemyChess* c=ecOp::findChess(x1,y1);
                     c->more(ecOp::codeToSub(cMap[y2][x2])); //对方棋子大于己方棋子
 
@@ -53,6 +59,7 @@ void FreshMap(char *cInMessage,string cOutMessage)
                 }
                 case 2:			//双方棋子对死
                 {
+                    isgongzu=false;
                     enemyChess* c=ecOp::findChess(x1,y1);
                     c->equ(ecOp::codeToSub(cMap[y2][x2])); //对方棋子等于己方棋子
                     cMap[y1][x1]='0';
@@ -86,6 +93,7 @@ void FreshMap(char *cInMessage,string cOutMessage)
         {
             case 0:			//己方棋子被对方吃掉
             {
+                isgongzu=false;
                 enemyChess* c=ecOp::findChess(x2,y2);
                 c->more(ecOp::codeToSub(cMap[y1][x1])); //对方棋子大于己方棋子
                 cMap[y1][x1]='0';
@@ -93,6 +101,7 @@ void FreshMap(char *cInMessage,string cOutMessage)
             }
             case 1:			//己方吃掉对方棋子
             {
+                isgongzu=false;
                 enemyChess* c=ecOp::findChess(x2,y2);
                 c->less(ecOp::codeToSub(cMap[y1][x1])); //对方棋子小于己方棋子
                 cMap[y2][x2]=cMap[y1][x1]; //2是新位置（敌方），1是老位置
@@ -101,6 +110,7 @@ void FreshMap(char *cInMessage,string cOutMessage)
             }
             case 2:			//双方棋子对死
             {
+                isgongzu=false;
                 enemyChess* c=ecOp::findChess(x2,y2);
                 c->equ(ecOp::codeToSub(cMap[y1][x1])); //对方棋子等于己方棋子
                 cMap[y1][x1]='0';
@@ -151,7 +161,94 @@ string CulArray(char *cInMessage,int &iFirst,int &iTime,int &iStep)
         return "ARRAY cbacddeeffggghhhiiijjkklj";
 }
 
-moveRecord gongzu()
+float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction)
+{
+    if(remainDepth==0) //到达搜索深度
+        return assess::valueEstimation(cMap);//返回局面评估
+
+    bool isEme = remainDepth%2;//根据深度判断当前玩家（规定深度为偶数，0为我方1为敌方）
+    int x1,y1,x2,y2;
+
+    //对于每一步走法
+    auto everyDo=[&]()
+    {
+        simulateMove(x1,y1,x2,y2,isEme); //实行这步走法
+        float value = -AlphaBeta(remainDepth-1,-beta,-alpha, aiAction);//递归调用，获取这步走法的局面评估
+        recordStack::pop(); //回溯这步棋
+        if(ecOp::search_depth == remainDepth && value > alpha)
+        {
+            aiAction = make_tuple(x1,y1,x2,y2); //若此时是最顶层，则记录最佳走法，贪心策略
+        }
+        alpha = (value > alpha)?value:alpha;//极大搜索
+    };
+
+    for(int i=0;i<12;i++) //对于当前己方的每个棋子
+    {
+        for(int j=0;j<5;j++)
+        {
+            basicFun isMovingChess,isChess;
+            //看看轮到我方走还是敌方走，决定用哪个基础判定函数
+            if(isEme) //敌方
+            {
+                isMovingChess=IsEmeMovingChess;
+                isChess=IsEmeChess;
+            }
+            else //我方
+            {
+                isMovingChess=IsMyChess;
+                isChess=IsMyChess;
+            }
+
+            y1=i;x1=j;y2=i;x2=j;
+            //fix:目前只遍历走一步的，应该改成也遍历多步的
+            if(isMovingChess(i,j) && !IsBaseCamp(i,j))  //己方不在大本营的可移动棋子
+            {
+                //可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
+                if(i>0 && !IsAfterHill(i,j) && !isChess(i-1,j) && !IsFilledCamp(i-1,j))
+                {
+                    y2=i-1;
+                    everyDo();
+                    if(alpha >= beta) //剪枝
+                        return alpha;
+                }
+                else
+                {
+                    //可以左移:不在最左列,左侧不是己方棋子,左侧不是被占用的行营
+                    if(j>0 && !isChess(i,j-1) && !IsFilledCamp(i,j-1))
+                    {
+                        x2=j-1;
+                        everyDo();
+                        if(alpha >= beta) //剪枝
+                            return alpha;
+                    }
+                    else
+                    {
+                        //可以右移://不在最右列,右侧不是己方棋子,右侧不是被占用的行营
+                        if(j<4 && !isChess(i,j+1) && !IsFilledCamp(i,j+1))
+                        {
+                            x2=j+1;
+                            everyDo();
+                            if(alpha >= beta) //剪枝
+                                return alpha;
+                        }
+                    }
+                }
+                //fix:后移没写，帮我补上吧（是不是需要一个条件？）
+            }
+        }
+    }
+    return alpha;
+}
+
+moveTup minimax()
+{
+    int x1=0,y1=0,x2=0,y2=0;
+    moveTup result=make_tuple(x1,y1,x2,y2);
+    AlphaBeta(ecOp::search_depth,0,0,result);
+    return result;
+}
+
+moveTup gongzu()
 {
     int x1,y1,x2,y2;
     for(int i=0;i<12;i++)
@@ -165,7 +262,7 @@ moveRecord gongzu()
                 if(i>0 && !IsAfterHill(i,j) && !IsMyChess(i-1,j) && !IsFilledCamp(i-1,j))
                 {
                     y2=i-1;
-                    return moveRecord(x1,y1,x2,y2);
+                    return make_tuple(x1,y1,x2,y2);
                 }
                 else
                 {
@@ -173,7 +270,7 @@ moveRecord gongzu()
                     if(j>0 && !IsMyChess(i,j-1) && !IsFilledCamp(i,j-1))
                     {
                         x2=j-1;
-                        return moveRecord(x1,y1,x2,y2);
+                        return make_tuple(x1,y1,x2,y2);
                     }
                     else
                     {
@@ -181,7 +278,7 @@ moveRecord gongzu()
                         if(j<4 && !IsMyChess(i,j+1) && !IsFilledCamp(i,j+1))
                         {
                             x2=j+1;
-                            return moveRecord(x1,y1,x2,y2);
+                            return make_tuple(x1,y1,x2,y2);
                         }
                     }
                 }
@@ -197,14 +294,18 @@ moveRecord gongzu()
 /* ************************************************************************ */
 string CulBestmove()
 {
+    int x1,y1,x2,y2;
     string cOutMessage="BESTMOVE A0A0";
 
-    moveRecord best=gongzu();
+    if(isgongzu)
+        tie(x1,y1,x2,y2)=gongzu();
+    else
+        tie(x1,y1,x2,y2)=minimax();
 
-    cOutMessage[9]=best.y1+'A';
-    cOutMessage[10]=best.x1+'0';
-    cOutMessage[11]=best.y2+'A';
-    cOutMessage[12]=best.x2+'0';
+    cOutMessage[9]=y1+'A';
+    cOutMessage[10]=x1+'0';
+    cOutMessage[11]=y2+'A';
+    cOutMessage[12]=x2+'0';
     return cOutMessage;
 }
 
@@ -232,16 +333,19 @@ int main()
             case 'S':								//START 指令（完成）
             {
                 cOutMessage = CulArray(cInMessage,iFirst,iTime,iStep);
-                //初始化地图与敌方棋子概率分布
+
+                //初始化代码
                 InitMap(cOutMessage);
                 ecOp::init();
+                isgongzu=true;
+
                 cout<<cOutMessage<<endl;
                 break;
             }
             case 'G':								//GO 指令
             {
                 FreshMap(cInMessage,cOutMessage);
-                cOutMessage = CulBestmove(cInMessage);
+                cOutMessage = CulBestmove();
                 cout<<cOutMessage<<endl;
                 break;
             }
