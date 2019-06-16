@@ -16,7 +16,7 @@
 using namespace std;
 
 char cMap[12][5]; //棋盘
-typedef function<int(int,int)> basicFun;
+typedef function<int(int, int)> basicFun;
 
 /* ************************************************************************ */
 /* 函数功能：i,j位置是否本方棋子											*/
@@ -26,18 +26,18 @@ typedef function<int(int,int)> basicFun;
 /* 返回值：																	*/
 /*     1己方棋子，0空棋位或对方棋子											*/
 /* ************************************************************************ */
-int IsMyChess(int i,int j)
+int IsMyChess(int i, int j)
 {
-    if(cMap[i][j]>='a'&& cMap[i][j]<='l')
-        return 1;
-    else
-        return 0;
+	if (cMap[i][j] >= 'a'&& cMap[i][j] <= 'l')
+		return 1;
+	else
+		return 0;
 }
 
 //是否为敌方棋子
-int IsEmeChess(int i,int j)
+int IsEmeChess(int i, int j)
 {
-    return cMap[i][j]=='X';
+	return cMap[i][j] == 'X';
 }
 
 /* ************************************************************************ */
@@ -48,27 +48,27 @@ int IsEmeChess(int i,int j)
 /* 返回值：																	*/
 /*     1己方可移动棋子(司令,军长,...,工兵,炸弹)，0军旗,地雷,对方棋子或空棋位*/
 /* ************************************************************************ */
-int IsMyMovingChess(int i,int j)
+int IsMyMovingChess(int i, int j)
 {
-    if(cMap[i][j]>='a' && cMap[i][j]<='i' || cMap[i][j]=='k')
-        return 1;
-    else
-        return 0;
+	if (cMap[i][j] >= 'a' && cMap[i][j] <= 'i' || cMap[i][j] == 'k')
+		return 1;
+	else
+		return 0;
 }
 
 //是否为敌方可移动棋子
-int IsEmeMovingChess(int i,int j)
+int IsEmeMovingChess(int i, int j)
 {
-    if(cMap[i][j]=='X')
-    {
-        enemyChess* c=ecOp::findChess(j,i);
-        int type=c->isDetermine();
-        if(type==dilei || type==junqi)
-            return 0;
-        else
-            return 1;
-    }
-    return 0;
+	if (cMap[i][j] == 'X')
+	{
+		enemyChess* c = ecOp::findChess(j, i);
+		int type = c->isDetermine();
+		if (type == dilei || type == junqi)
+			return 0;
+		else
+			return 1;
+	}
+	return 0;
 }
 
 /* ************************************************************************ */
@@ -78,12 +78,20 @@ int IsEmeMovingChess(int i,int j)
 /* 返回值：																	*/
 /*     1处于山界后，0不处于山界后											*/
 /* ************************************************************************ */
-int IsAfterHill(int i,int j)
+int IsAfterHill(int i, int j)
 {
-    if(i*5+j==31 || i*5+j==33)
-        return 1;
-    else
-        return 0;
+	if (i * 5 + j == 31 || i * 5 + j == 33)
+		return 1;
+	else
+		return 0;
+}
+
+int IsBeforeHill(int i, int j)
+{
+	if (i * 5 + j == 26 || i * 5 + j == 28)
+		return 1;
+	else
+		return 0;
 }
 
 /* ************************************************************************ */
@@ -93,12 +101,12 @@ int IsAfterHill(int i,int j)
 /* 返回值：																	*/
 /*     1是行营，0不是行营													*/
 /* ************************************************************************ */
-int IsMoveCamp(int i,int j)
+int IsMoveCamp(int i, int j)
 {
-    if(i*5+j==11 || i*5+j==13 || i*5+j==17 || i*5+j==21 || i*5+j==23 || i*5+j==36 || i*5+j==38 || i*5+j==42 || i*5+j==46 || i*5+j==48)
-        return 1;
-    else
-        return 0;
+	if (i * 5 + j == 11 || i * 5 + j == 13 || i * 5 + j == 17 || i * 5 + j == 21 || i * 5 + j == 23 || i * 5 + j == 36 || i * 5 + j == 38 || i * 5 + j == 42 || i * 5 + j == 46 || i * 5 + j == 48)
+		return 1;
+	else
+		return 0;
 }
 
 /* ************************************************************************ */
@@ -108,12 +116,12 @@ int IsMoveCamp(int i,int j)
 /* 返回值：																	*/
 /*     1是大本营，0不是大本营												*/
 /* ************************************************************************ */
-int IsBaseCamp(int i,int j)
+int IsBaseCamp(int i, int j)
 {
-    if(i*5+j==1 || i*5+j==3 || i*5+j==56 || i*5+j==58)
-        return 1;
-    else
-        return 0;
+	if (i * 5 + j == 1 || i * 5 + j == 3 || i * 5 + j == 56 || i * 5 + j == 58)
+		return 1;
+	else
+		return 0;
 }
 
 /* ************************************************************************ */
@@ -124,12 +132,12 @@ int IsBaseCamp(int i,int j)
 /* 返回值：																	*/
 /*     1有棋子占位的行营,0不是行营或是空行营								*/
 /* ************************************************************************ */
-int IsFilledCamp(int i,int j)
+int IsFilledCamp(int i, int j)
 {
-    if(IsMoveCamp(i,j) && cMap[i][j]!='0')
-        return 1;
-    else
-        return 0;
+	if (IsMoveCamp(i, j) && cMap[i][j] != '0')
+		return 1;
+	else
+		return 0;
 }
 
 /* ************************************************************************ */
@@ -139,18 +147,18 @@ int IsFilledCamp(int i,int j)
 /* ************************************************************************ */
 void InitMap(string cOutMessage) //这个是用之前计算好的数据处理，所以是cOutMessage
 {
-    int i,j,k;
-    for(i=0;i<6;i++)	//标记对方棋子
-        for(j=0;j<5;j++)
-            if(IsMoveCamp(i,j))
-                cMap[i][j]='0';
-            else
-                cMap[i][j]='X';
-    k=6;
-    for(i=6;i<12;i++)	//标记己方棋子
-        for(j=0;j<5;j++)
-            if(IsMoveCamp(i,j))
-                cMap[i][j]='0';
-            else
-                cMap[i][j]=cOutMessage[k++];
+	int i, j, k;
+	for (i = 0;i < 6;i++)	//标记对方棋子
+		for (j = 0;j < 5;j++)
+			if (IsMoveCamp(i, j))
+				cMap[i][j] = '0';
+			else
+				cMap[i][j] = 'X';
+	k = 6;
+	for (i = 6;i < 12;i++)	//标记己方棋子
+		for (j = 0;j < 5;j++)
+			if (IsMoveCamp(i, j))
+				cMap[i][j] = '0';
+			else
+				cMap[i][j] = cOutMessage[k++];
 }
