@@ -10,7 +10,7 @@ class assess
         if(type==zhadan)
             return shizhang; //炸弹等于师长
         else if(type==dilei)
-            return tuanzhang;
+            return tuanzhang; //地雷等于团长
         else
             return type; //别的下标就是按棋力大小排的，直接返回即可
     }

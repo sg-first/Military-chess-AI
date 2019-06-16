@@ -161,10 +161,10 @@ string CulArray(char *cInMessage,int &iFirst,int &iTime,int &iStep)
         return "ARRAY cbacddeeffggghhhiiijjkklj";
 }
 
-float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction)
+float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //搜索用的递归函数
 {
     if(remainDepth==0) //到达搜索深度
-        return assess::valueEstimation(cMap);//返回局面评估
+        return assess::valueEstimation(cMap); //返回局面评估
 
     bool isEme = remainDepth%2;//根据深度判断当前玩家（规定深度为偶数，0为我方1为敌方）
     int x1,y1,x2,y2;
@@ -172,14 +172,15 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction)
     //对于每一步走法
     auto everyDo=[&]()
     {
-        simulateMove(x1,y1,x2,y2,isEme); //实行这步走法
-        float value = -AlphaBeta(remainDepth-1,-beta,-alpha, aiAction);//递归调用，获取这步走法的局面评估
+        recordStack::push(x1,y1,x2,y2,isEme); //实行这步走法
+        float value = -AlphaBeta(remainDepth-1,-beta,-alpha, aiAction); //递归调用，获取这步走法的局面评估
         recordStack::pop(); //回溯这步棋
         if(ecOp::search_depth == remainDepth && value > alpha)
         {
             aiAction = make_tuple(x1,y1,x2,y2); //若此时是最顶层，则记录最佳走法，贪心策略
         }
-        alpha = (value > alpha)?value:alpha;//极大搜索
+        if(value > alpha) //更新最大值
+            alpha = value;
     };
 
     for(int i=0;i<12;i++) //对于当前己方的每个棋子
@@ -237,18 +238,18 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction)
             }
         }
     }
-    return alpha;
+    return alpha; //返回子节点中的最大值
 }
 
-moveTup minimax()
+moveTup minimax() //极大极小搜索启动
 {
     int x1=0,y1=0,x2=0,y2=0;
     moveTup result=make_tuple(x1,y1,x2,y2);
-    AlphaBeta(ecOp::search_depth,0,0,result);
+    AlphaBeta(ecOp::search_depth,-10000,10000,result);
     return result;
 }
 
-moveTup gongzu()
+moveTup gongzu() //拱卒
 {
     int x1,y1,x2,y2;
     for(int i=0;i<12;i++)
