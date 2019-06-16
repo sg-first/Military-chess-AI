@@ -202,7 +202,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 		{
 			y1 = i;x1 = j;y2 = i;x2 = j;
 			if (isMovingChess(i, j) && !IsBaseCamp(i, j))  //己方不在大本营的可移动棋子
-			{
+			{//未判断铁路.....
 				//可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
 				for (int k = 1;y2 > 0 && !IsAfterHill(y2, j) && !isChess(y2 - 1, j) && !IsFilledCamp(y2 - 1, j);k++)
 				{
