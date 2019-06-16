@@ -202,38 +202,78 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 		{
 			y1 = i;x1 = j;y2 = i;x2 = j;
 			if (isMovingChess(i, j) && !IsBaseCamp(i, j))  //己方不在大本营的可移动棋子
-			{//未判断铁路.....
+			{
 				//可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
-				for (int k = 1;y2 > 0 && !IsAfterHill(y2, j) && !isChess(y2 - 1, j) && !IsFilledCamp(y2 - 1, j);k++)
+				if (i > 0 && (!IsVerticalRailway(j) || i == 11) && !IsAfterHill(i, j) && !isChess(i - 1, j) && !IsFilledCamp(i - 1, j))
 				{
-					y2 = i - k;
+					y2 = i - 1;
 					everyDo();
 					if (alpha >= beta) //剪枝
 						return alpha;
+				}
+				else
+				{
+					for (int k = 1;y2 > 0 && y2 < 11 && IsVerticalRailway(j) && !IsAfterHill(y2, j) && !isChess(y2 - 1, j) && !IsFilledCamp(y2 - 1, j);k++)
+					{
+						y2 = i - k;
+						everyDo();
+						if (alpha >= beta) //剪枝
+							return alpha;
+					}
 				}
 				//可以左移:不在最左列,左侧不是己方棋子,左侧不是被占用的行营
-				for (int k = 1;x2 > 0 && !isChess(i, x2 - 1) && !IsFilledCamp(i, x2 - 1);k++)
+				if (j > 0 && !IsAcrossRailway(i) && !isChess(i, j - 1) && !IsFilledCamp(i, j - 1))
 				{
-					x2 = j - k;
+					x2 = j - 1;
 					everyDo();
 					if (alpha >= beta) //剪枝
 						return alpha;
+				}
+				else
+				{
+					for (int k = 1;x2 > 0 && IsAcrossRailway(i) && !isChess(i, x2 - 1) && !IsFilledCamp(i, x2 - 1);k++)
+					{
+						x2 = j - k;
+						everyDo();
+						if (alpha >= beta) //剪枝
+							return alpha;
+					}
 				}
 				//可以右移:不在最右列,右侧不是己方棋子,右侧不是被占用的行营
-				for (int k = 1;x2 < 4 && !isChess(i, x2 + 1) && !IsFilledCamp(i, x2 + 1);k++)
+				if (j < 4 && !IsAcrossRailway(i) && !isChess(i, j + 1) && !IsFilledCamp(i, j + 1))
 				{
-					x2 = j + k;
+					x2 = j + 1;
 					everyDo();
 					if (alpha >= beta) //剪枝
 						return alpha;
 				}
-				//可以后移:不在最后列,后侧不是己方棋子,后侧不是被占用的行营
-				for (int k = 1;y2 < 11 && !IsBeforeHill(y2, j) && !isChess(y2 + 1, j) && !IsFilledCamp(y2 + 1, j);k++)
+				else
 				{
-					y2 = i + k;
+					for (int k = 1;x2 < 4 && IsAcrossRailway(i) && !isChess(i, x2 + 1) && !IsFilledCamp(i, x2 + 1);k++)
+					{
+						x2 = j + k;
+						everyDo();
+						if (alpha >= beta) //剪枝
+							return alpha;
+					}
+				}
+				//可以后移:不在最后列,后侧不是己方棋子,后侧不是被占用的行营
+				if (i < 11 && (!IsVerticalRailway(j) || i == 0) && !IsBeforeHill(i, j) && !isChess(i + 1, j) && !IsFilledCamp(i + 1, j))
+				{
+					y2 = i + 1;
 					everyDo();
 					if (alpha >= beta) //剪枝
 						return alpha;
+				}
+				else
+				{
+					for (int k = 1;y2 < 11 && y2 > 0 && IsVerticalRailway(j) && !IsBeforeHill(y2, j) && !isChess(y2 + 1, j) && !IsFilledCamp(y2 + 1, j);k++)
+					{
+						y2 = i + k;
+						everyDo();
+						if (alpha >= beta) //剪枝
+							return alpha;
+					}
 				}
 				//暂未考虑斜着进入行营
 			}
