@@ -8,7 +8,9 @@ class assess
     static int codeToStrength(int type) //获取某类棋子的棋力值
     {
         if(type==zhadan)
-            return siling; //炸弹等于司令
+            return shizhang; //炸弹等于师长
+        else if(type==dilei)
+            return tuanzhang;
         else
             return type; //别的下标就是按棋力大小排的，直接返回即可
     }
@@ -38,7 +40,10 @@ public:
             else
                 return 1;
         }
-        else //不是工兵的情况
+        //涉及炸弹的特判
+        if(mytype==zhadan || encType==zhadan)
+            return 2;
+        else //不是地雷炸弹工兵的情况
         {
             float myStrength=assess::codeToStrength(mytype);
             float enemyStrength=getChessStrength(enc);
