@@ -257,7 +257,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 							return alpha;
 					}
 				}
-				//可以后移:不在最后列,后侧不是己方棋子,后侧不是被占用的行营
+				//可以后移:不在最后列,不在山界前,后侧不是己方棋子,后侧不是被占用的行营
 				if (i < 11 && (!IsVerticalRailway(j) || i == 0) && !IsBeforeHill(i, j) && !isChess(i + 1, j) && !IsFilledCamp(i + 1, j))
 				{
 					y2 = i + 1;
@@ -275,7 +275,78 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 							return alpha;
 					}
 				}
-				//暂未考虑斜着进入行营
+				//可以左上进行营:左上不是被占用的行营且它是行营
+				if (!IsFilledCamp(i - 1, j - 1) && IsMoveCamp(i - 1, j - 1))
+				{
+					y2 = i - 1;
+					x2 = j - 1;
+					everyDo();
+					if (alpha >= beta) //剪枝
+						return alpha;
+				}
+				//可以右上进行营:右上不是被占用的行营且它是行营
+				if (!IsFilledCamp(i - 1, j + 1) && IsMoveCamp(i - 1, j + 1))
+				{
+					y2 = i - 1;
+					x2 = j + 1;
+					everyDo();
+					if (alpha >= beta) //剪枝
+						return alpha;
+				}
+				//可以左下进行营:左下不是被占用的行营且它是行营
+				if (!IsFilledCamp(i + 1, j - 1) && IsMoveCamp(i + 1, j - 1))
+				{
+					y2 = i + 1;
+					x2 = j - 1;
+					everyDo();
+					if (alpha >= beta) //剪枝
+						return alpha;
+				}
+				//可以右下进行营:右下不是被占用的行营且它是行营
+				if (!IsFilledCamp(i + 1, j + 1) && IsMoveCamp(i + 1, j + 1))
+				{
+					y2 = i + 1;
+					x2 = j + 1;
+					everyDo();
+					if (alpha >= beta) //剪枝
+						return alpha;
+				}
+				//可以左上出行营:目前位置为行营且左上不是己方棋子
+				if (IsMoveCamp(i, j) && !isChess(i - 1, j - 1))
+				{
+					y2 = i - 1;
+					x2 = j - 1;
+					everyDo();
+					if (alpha >= beta) //剪枝
+						return alpha;
+				}
+				//可以右上出行营:目前位置为行营且右上不是己方棋子
+				if (IsMoveCamp(i, j) && !isChess(i - 1, j + 1))
+				{
+					y2 = i - 1;
+					x2 = j + 1;
+					everyDo();
+					if (alpha >= beta) //剪枝
+						return alpha;
+				}
+				//可以左下出行营:目前位置为行营且左下不是己方棋子
+				if (IsMoveCamp(i, j) && !isChess(i + 1, j - 1))
+				{
+					y2 = i + 1;
+					x2 = j - 1;
+					everyDo();
+					if (alpha >= beta) //剪枝
+						return alpha;
+				}
+				//可以右下出行营:目前位置为行营且右下不是己方棋子
+				if (IsMoveCamp(i, j) && !isChess(i + 1, j + 1))
+				{
+					y2 = i + 1;
+					x2 = j + 1;
+					everyDo();
+					if (alpha >= beta) //剪枝
+						return alpha;
+				}
 			}
 		}
 	}
