@@ -20,6 +20,7 @@ const int zhadan = 11;
 #define SIZE 12
 
 #define maxDepth 10
+#define minDepth 2
 
 class enemyChess;
 
@@ -66,8 +67,6 @@ public:
 	void equ(int type) //该棋子与某棋同尽（也就是被吃了）
 	{
 		setDie();
-		//如果我方是炸弹，与敌方同尽不能说明任何情况（只能引入敌方多死了一个子的信息）
-		//已经死亡的棋子概率分布不再被访问，就不用给自己的概率分布-1了
 		if (type != zhadan)
 		{
 			if (type == dilei) //我方是地雷，只能与炸弹同尽
@@ -191,7 +190,7 @@ public:
 
 	static void init() //开局时初始化所有敌方棋子对象
 	{
-		search_depth = 2;
+		search_depth = minDepth;
 		//x为0-4，y为A-F（0-5）
 		for (int i = 0;i <= 4;i++)
 		{
@@ -234,6 +233,19 @@ public:
 		if (code == 'l' || code == 'L')
 			return junqi;
 		return -1;
+	}
+
+	static float avgCertainty()
+	{
+		float sum = 0;
+		for (enemyChess* c : allEnemyChess)
+			sum += c->certainty();
+		return sum / allEnemyChess.size();
+	}
+
+	static void adjustDepth()
+	{
+		search_depth = 33.33*avgCertainty() + 1;
 	}
 };
 int ecOp::search_depth;
