@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <array>
+#include <math.h>
 using namespace std;
 
 const int siling = 9;
@@ -153,7 +154,21 @@ public:
 
 	float certainty() //返回当前棋子类型评估的确定性，整体不确定性用来动态确定search_depth
 	{
-		//fix:找一个指标
+		//使用标准差计算不确定度
+		float sum = this->sum();
+		float plan[SIZE];
+		float average = 0;
+		float variance = 0;
+		for (int p = 0;p < SIZE;p++)
+		{
+			plan[p] = this->prob[p] / sum;
+			average = average + plan[p];
+		}
+		average = average / SIZE;
+		for (int p = 0;p < SIZE;p++)
+			variance = variance + (plan[p] - average)*(plan[p] - average);
+		variance = variance / SIZE;
+		return sqrt(variance);
 	}
 };
 
