@@ -108,7 +108,20 @@ int IsMoveCamp(int i, int j)
 	else
 		return 0;
 }
-
+int IsMyMoveCamp(int i, int j)
+{
+	if (i * 5 + j == 36 || i * 5 + j == 38 || i * 5 + j == 42 || i * 5 + j == 46 || i * 5 + j == 48)
+		return 1;
+	else
+		return 0;
+}
+int IsEnemyMoveCamp(int i, int j)
+{
+	if (i * 5 + j == 11 || i * 5 + j == 13 || i * 5 + j == 17 || i * 5 + j == 21 || i * 5 + j == 23)
+		return 1;
+	else
+		return 0;
+}
 /* ************************************************************************ */
 /* 函数功能：i,j位置是否大本营											*/
 /* 接口参数：																*/
@@ -123,7 +136,20 @@ int IsBaseCamp(int i, int j)
 	else
 		return 0;
 }
-
+int IsMyBaseCamp(int i, int j)
+{
+	if (i * 5 + j == 56 || i * 5 + j == 58)
+		return 1;
+	else
+		return 0;
+}
+int IsEnemyBaseCamp(int i, int j)
+{
+	if (i * 5 + j == 1 || i * 5 + j == 3)
+		return 1;
+	else
+		return 0;
+}
 /* ************************************************************************ */
 /* 函数功能：i,j位置是否有棋子占位的行营										*/
 /* 接口参数：																*/
@@ -158,6 +184,13 @@ int IsAcrossRailway(int i)
 int IsVerticalRailway(int j)
 {
 	if (j == 0 || j == 4)
+		return 1;
+	else
+		return 0;
+}
+int IsEngineerRailway(int i, int j)
+{
+	if (j == 2 && (i == 5 || i == 6))
 		return 1;
 	else
 		return 0;
