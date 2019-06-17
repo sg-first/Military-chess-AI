@@ -44,6 +44,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 				enemyChess* c = ecOp::findChess(x1, y1);
 				c->less(ecOp::codeToSub(cMap[y2][x2])); //对方棋子小于己方棋子
 				cMap[y1][x1] = '0'; //对方棋子消失，己方不必改变
+				ecOp::adjustDepth();
 				break;
 			}
 			case 1:			//对方吃掉己方棋子
@@ -55,6 +56,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 				cMap[y2][x2] = cMap[y1][x1]; //对方棋子移到己方位置（1是对方）
 				cMap[y1][x1] = '0';
 				c->setPos(x2, y2);
+				ecOp::adjustDepth();
 				break;
 			}
 			case 2:			//双方棋子对死
@@ -64,6 +66,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 				c->equ(ecOp::codeToSub(cMap[y2][x2])); //对方棋子等于己方棋子
 				cMap[y1][x1] = '0';
 				cMap[y2][x2] = '0';
+				ecOp::adjustDepth();
 				break;
 			}
 			case 3:			//对方移动棋子
@@ -72,6 +75,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 				c->setPos(x2, y2);
 				cMap[y2][x2] = cMap[y1][x1];
 				cMap[y1][x1] = '0';
+				ecOp::adjustDepth();
 				break;
 			}
 			}
@@ -97,6 +101,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 			enemyChess* c = ecOp::findChess(x2, y2);
 			c->more(ecOp::codeToSub(cMap[y1][x1])); //对方棋子大于己方棋子
 			cMap[y1][x1] = '0';
+			ecOp::adjustDepth();
 			break;
 		}
 		case 1:			//己方吃掉对方棋子
@@ -106,6 +111,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 			c->less(ecOp::codeToSub(cMap[y1][x1])); //对方棋子小于己方棋子
 			cMap[y2][x2] = cMap[y1][x1]; //2是新位置（敌方），1是老位置
 			cMap[y1][x1] = '0';
+			ecOp::adjustDepth();
 			break;
 		}
 		case 2:			//双方棋子对死
@@ -115,6 +121,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 			c->equ(ecOp::codeToSub(cMap[y1][x1])); //对方棋子等于己方棋子
 			cMap[y1][x1] = '0';
 			cMap[y2][x2] = '0';
+			ecOp::adjustDepth();
 			break;
 		}
 		case 3:			//己方移动棋子
