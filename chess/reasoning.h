@@ -29,21 +29,21 @@ vector<enemyChess*> allEnemyChess;
 class enemyChess
 {
 private:
-	void changeProbNum(int sub, int d) //æ”¹å˜ä»å±æŸç±»æ£‹å­çš„æ¦‚ç‡åˆ†
+	void changeProbNum(int sub, int d) //¸Ä±ä´ÓÊôÄ³ÀàÆå×ÓµÄ¸ÅÂÊ·Ö
 	{
 		prob[sub] -= d;
-		if (d < 0) //æ¦‚ç‡åˆ†ä¸èƒ½ä¸ºè´Ÿ
+		if (d < 0) //¸ÅÂÊ·Ö²»ÄÜÎª¸º
 			prob[sub] = 0;
 	}
 
-	void otherDie() //å…¶å®ƒæ£‹å­æ­»å»å¯¼è‡´æœ¬æ£‹å­æ¦‚ç‡åˆ†å¸ƒå˜åŒ–
+	void otherDie() //ÆäËüÆå×ÓËÀÈ¥µ¼ÖÂ±¾Æå×Ó¸ÅÂÊ·Ö²¼±ä»¯
 	{
-		if (isDetermine() != -1) //å¦‚æœå½“å‰æ£‹å­å·²ç»ç¡®å®š
-			return; //ä¸å†å¤„ç†
+		if (isDetermine() != -1) //Èç¹ûµ±Ç°Æå×ÓÒÑ¾­È·¶¨
+			return; //²»ÔÙ´¦Àí
 		{
 			float sum = this->sum();
 			float d = 1 / sum;
-			//å¯¹probçš„æ‰€æœ‰ç»´åº¦å‡å»d
+			//¶ÔprobµÄËùÓĞÎ¬¶È¼õÈ¥d
 			for (int i = 0;i < SIZE;i++)
 				changeProbNum(i, d);
 		}
@@ -64,42 +64,42 @@ public:
 		return sum;
 	}
 
-	void equ(int type) //è¯¥æ£‹å­ä¸æŸæ£‹åŒå°½ï¼ˆä¹Ÿå°±æ˜¯è¢«åƒäº†ï¼‰
+	void equ(int type) //¸ÃÆå×ÓÓëÄ³ÆåÍ¬¾¡£¨Ò²¾ÍÊÇ±»³ÔÁË£©
 	{
 		setDie();
 		if (type != zhadan)
 		{
-			if (type == dilei) //æˆ‘æ–¹æ˜¯åœ°é›·ï¼Œåªèƒ½ä¸ç‚¸å¼¹åŒå°½
+			if (type == dilei) //ÎÒ·½ÊÇµØÀ×£¬Ö»ÄÜÓëÕ¨µ¯Í¬¾¡
 				determine(zhadan);
 			else
-				determine(type); //é™¤æ­¤æƒ…å†µä¹‹å¤–å°±ä¸€æ ·
+				determine(type); //³ı´ËÇé¿öÖ®Íâ¾ÍÒ»Ñù
 		}
 	}
 
-	void less(int type) //è®¾å®šè¯¥æ£‹å­å°äºæŸæ£‹ï¼ˆä¹Ÿå°±æ˜¯è¢«åƒäº†ï¼‰
+	void less(int type) //Éè¶¨¸ÃÆå×ÓĞ¡ÓÚÄ³Æå£¨Ò²¾ÍÊÇ±»³ÔÁË£©
 	{
 		setDie();
-		if (type != dilei && type != zhadan) //ä¸æ”¯æŒå°äºåœ°é›·ç‚¸å¼¹
+		if (type != dilei && type != zhadan) //²»Ö§³ÖĞ¡ÓÚµØÀ×Õ¨µ¯
 		{
 			for (int i = ALL;i > type;i--)
-				prob[i] = 0; //æŠŠå¤§äºtypeçš„æ‰€æœ‰æ¦‚ç‡åˆ†æ¸…é›¶
+				prob[i] = 0; //°Ñ´óÓÚtypeµÄËùÓĞ¸ÅÂÊ·ÖÇåÁã
 		}
 	}
 
-	void more(int type) //è®¾å®šè¯¥æ£‹å­å¤§äºæŸæ£‹
+	void more(int type) //Éè¶¨¸ÃÆå×Ó´óÓÚÄ³Æå
 	{
 		prob[zhadan] = 0;
 
-		if (type == zhadan) //ä¸å¯èƒ½åƒæ‰ç‚¸å¼¹
+		if (type == zhadan) //²»¿ÉÄÜ³ÔµôÕ¨µ¯
 			return;
 		if (type == siling)
-			determine(dilei); //æŠŠå¸ä»¤åƒäº†ä¸€å®šæ˜¯åœ°é›·
-		else if (type == dilei) //æŠŠåœ°é›·åƒäº†ä¸€å®šæ˜¯å·¥å…µ
+			determine(dilei); //°ÑË¾Áî³ÔÁËÒ»¶¨ÊÇµØÀ×
+		else if (type == dilei) //°ÑµØÀ×³ÔÁËÒ»¶¨ÊÇ¹¤±ø
 			determine(gongbing);
 		else
 		{
 			for (int i = 0;i < type;i++)
-				prob[i] = 0; //æŠŠå°äºtypeçš„æ‰€æœ‰æ¦‚ç‡åˆ†æ¸…é›¶
+				prob[i] = 0; //°ÑĞ¡ÓÚtypeµÄËùÓĞ¸ÅÂÊ·ÖÇåÁã
 		}
 	}
 
@@ -108,7 +108,7 @@ public:
 		isDie = true;
 		x = -1;
 		y = -1;
-		//æœ¬æ£‹å­æ­»äº¡ï¼Œä¼šå¯¼è‡´ã€å…¶å®ƒã€‘æ£‹å­çš„æ¦‚ç‡åˆ†å¸ƒå˜åŒ–
+		//±¾Æå×ÓËÀÍö£¬»áµ¼ÖÂ¡¾ÆäËü¡¿Æå×ÓµÄ¸ÅÂÊ·Ö²¼±ä»¯
 		for (enemyChess *i : allEnemyChess)
 		{
 			if (i != this)
@@ -116,16 +116,16 @@ public:
 		}
 	}
 
-	void determine(int type) //ç¡®è®¤è¯¥æ£‹å­ä¸ºæŸæ£‹
+	void determine(int type) //È·ÈÏ¸ÃÆå×ÓÎªÄ³Æå
 	{
-		if (isDetermine() != -1) //å¦‚æœå½“å‰æ£‹å­å·²ç»ç¡®å®š
-			return; //ä¸å†å¤„ç†
+		if (isDetermine() != -1) //Èç¹ûµ±Ç°Æå×ÓÒÑ¾­È·¶¨
+			return; //²»ÔÙ´¦Àí
 		else
 		{
 			for (float &i : prob)
 				i = 0;
 			prob[type] = 1;
-			//æ–°äº§ç”Ÿç¡®å®šçš„æ£‹å­ï¼Œä¼šå¯¼è‡´ã€å…¶å®ƒã€‘æ£‹å­çš„æ¦‚ç‡åˆ†å¸ƒå˜åŒ–
+			//ĞÂ²úÉúÈ·¶¨µÄÆå×Ó£¬»áµ¼ÖÂ¡¾ÆäËü¡¿Æå×ÓµÄ¸ÅÂÊ·Ö²¼±ä»¯
 			for (enemyChess *i : allEnemyChess)
 			{
 				if (i != this)
@@ -134,7 +134,7 @@ public:
 		}
 	}
 
-	int isDetermine() //è¿”å›å½“å‰æ£‹å­çš„ç¡®å®šç±»å‹ï¼Œ-1ä¸ºä¸ç¡®å®š
+	int isDetermine() //·µ»Øµ±Ç°Æå×ÓµÄÈ·¶¨ÀàĞÍ£¬-1Îª²»È·¶¨
 	{
 		int type = -1;
 		for (unsigned int i = 0;i < prob.size();i++)
@@ -153,9 +153,9 @@ public:
 		this->y = y;
 	}
 
-	float certainty() //è¿”å›å½“å‰æ£‹å­ç±»å‹è¯„ä¼°çš„ç¡®å®šæ€§ï¼Œæ•´ä½“ä¸ç¡®å®šæ€§ç”¨æ¥åŠ¨æ€ç¡®å®šsearch_depth
+	float certainty() //·µ»Øµ±Ç°Æå×ÓÀàĞÍÆÀ¹ÀµÄÈ·¶¨ĞÔ£¬ÕûÌå²»È·¶¨ĞÔÓÃÀ´¶¯Ì¬È·¶¨search_depth
 	{
-		//ä½¿ç”¨æ ‡å‡†å·®è®¡ç®—ä¸ç¡®å®šåº¦
+		//Ê¹ÓÃ±ê×¼²î¼ÆËã²»È·¶¨¶È
 		float sum = this->sum();
 		float plan[SIZE];
 		float average = 0;
@@ -178,7 +178,7 @@ class ecOp
 public:
 	static int search_depth;
 
-	static enemyChess* findChess(int x, int y) //ç»™åæ ‡æ‰¾ä¸€ä¸ªæ£‹å­å¯¹è±¡
+	static enemyChess* findChess(int x, int y) //¸ø×ø±êÕÒÒ»¸öÆå×Ó¶ÔÏó
 	{
 		for (enemyChess* i : allEnemyChess)
 		{
@@ -188,10 +188,10 @@ public:
 		return nullptr;
 	}
 
-	static void init() //å¼€å±€æ—¶åˆå§‹åŒ–æ‰€æœ‰æ•Œæ–¹æ£‹å­å¯¹è±¡
+	static void init() //¿ª¾ÖÊ±³õÊ¼»¯ËùÓĞµĞ·½Æå×Ó¶ÔÏó
 	{
 		search_depth = minDepth;
-		//xä¸º0-4ï¼Œyä¸ºA-Fï¼ˆ0-5ï¼‰
+		//xÎª0-4£¬yÎªA-F£¨0-5£©
 		for (int i = 0;i <= 4;i++)
 		{
 			for (int j = 0;j <= 5;j++)
@@ -206,7 +206,7 @@ public:
 		}
 	}
 
-	static int codeToSub(char code)
+	static int codeToType(char code)
 	{
 		if (code == 'a')
 			return siling;

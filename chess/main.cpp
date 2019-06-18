@@ -1,10 +1,10 @@
-#include <tuple>
+﻿#include "pch.h"
+
 #include "basic.h"
 #include "help.h"
 #include "reasoning.h"
 #include "simulate.h"
 
-typedef tuple<int, int, int, int> moveTup;
 bool isgongzu;
 
 /* ************************************************************************ */
@@ -42,7 +42,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 			{
 				isgongzu = false;
 				enemyChess* c = ecOp::findChess(x1, y1);
-				c->less(ecOp::codeToSub(cMap[y2][x2])); //对方棋子小于己方棋子
+				c->less(ecOp::codeToType(cMap[y2][x2])); //对方棋子小于己方棋子
 				cMap[y1][x1] = '0'; //对方棋子消失，己方不必改变
 				ecOp::adjustDepth();
 				break;
@@ -51,7 +51,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 			{
 				isgongzu = false;
 				enemyChess* c = ecOp::findChess(x1, y1);
-				c->more(ecOp::codeToSub(cMap[y2][x2])); //对方棋子大于己方棋子
+				c->more(ecOp::codeToType(cMap[y2][x2])); //对方棋子大于己方棋子
 
 				cMap[y2][x2] = cMap[y1][x1]; //对方棋子移到己方位置（1是对方）
 				cMap[y1][x1] = '0';
@@ -63,7 +63,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 			{
 				isgongzu = false;
 				enemyChess* c = ecOp::findChess(x1, y1);
-				c->equ(ecOp::codeToSub(cMap[y2][x2])); //对方棋子等于己方棋子
+				c->equ(ecOp::codeToType(cMap[y2][x2])); //对方棋子等于己方棋子
 				cMap[y1][x1] = '0';
 				cMap[y2][x2] = '0';
 				ecOp::adjustDepth();
@@ -99,7 +99,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 		{
 			isgongzu = false;
 			enemyChess* c = ecOp::findChess(x2, y2);
-			c->more(ecOp::codeToSub(cMap[y1][x1])); //对方棋子大于己方棋子
+			c->more(ecOp::codeToType(cMap[y1][x1])); //对方棋子大于己方棋子
 			cMap[y1][x1] = '0';
 			ecOp::adjustDepth();
 			break;
@@ -108,7 +108,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 		{
 			isgongzu = false;
 			enemyChess* c = ecOp::findChess(x2, y2);
-			c->less(ecOp::codeToSub(cMap[y1][x1])); //对方棋子小于己方棋子
+			c->less(ecOp::codeToType(cMap[y1][x1])); //对方棋子小于己方棋子
 			cMap[y2][x2] = cMap[y1][x1]; //2是新位置（敌方），1是老位置
 			cMap[y1][x1] = '0';
 			ecOp::adjustDepth();
@@ -118,7 +118,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 		{
 			isgongzu = false;
 			enemyChess* c = ecOp::findChess(x2, y2);
-			c->equ(ecOp::codeToSub(cMap[y1][x1])); //对方棋子等于己方棋子
+			c->equ(ecOp::codeToType(cMap[y1][x1])); //对方棋子等于己方棋子
 			cMap[y1][x1] = '0';
 			cMap[y2][x2] = '0';
 			ecOp::adjustDepth();
@@ -170,8 +170,14 @@ string CulArray(char *cInMessage, int &iFirst, int &iTime, int &iStep)
 
 float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //搜索用的递归函数
 {
+	writeFile("特种兵的日记.txt", "剩余深度："+to_string(remainDepth));
+	outputCMap();
 	if (remainDepth == 0) //到达搜索深度
-		return assess::valueEstimation(cMap); //返回局面评估
+	{
+		float guzhi = assess::valueEstimation(cMap);
+		writeFile("特种兵的日记.txt", "局面估值："+to_string(guzhi));
+		return  guzhi;//返回局面评估
+	}
 
 	bool isEme = remainDepth % 2;//根据深度判断当前玩家（规定深度为偶数，0为我方1为敌方）
 	int x1, y1, x2, y2;
@@ -211,7 +217,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 			if (isMovingChess(i, j) && !IsBaseCamp(i, j))  //己方不在大本营的可移动棋子
 			{
 				//可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
-				if (i > 0 && (!IsVerticalRailway(j) || i == 11) && !IsAfterHill(i, j) && !isChess(i - 1, j) && !IsFilledCamp(i - 1, j))
+				if (i > 0 && !IsVerticalRailway(i,j) && !IsAfterHill(i, j) && !isChess(i - 1, j) && !IsFilledCamp(i - 1, j))
 				{
 					y2 = i - 1;
 					everyDo();
@@ -220,7 +226,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 				}
 				else
 				{
-					for (int k = 1;y2 > 0 && y2 < 11 && IsVerticalRailway(j) && !IsAfterHill(y2, j) && !isChess(y2 - 1, j) && !IsFilledCamp(y2 - 1, j);k++)
+					for (int k = 1;y2 > 0 && y2 < 11 && IsVerticalRailway(i,j) && !IsAfterHill(y2, j) && !isChess(y2 - 1, j) && !IsFilledCamp(y2 - 1, j);k++)
 					{
 						y2 = i - k;
 						everyDo();
@@ -264,8 +270,9 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 							return alpha;
 					}
 				}
+
 				//可以后移:不在最后列,不在山界前,后侧不是己方棋子,后侧不是被占用的行营
-				if (i < 11 && (!IsVerticalRailway(j) || i == 0) && !IsBeforeHill(i, j) && !isChess(i + 1, j) && !IsFilledCamp(i + 1, j))
+				if (i < 11 && !IsVerticalRailway(i,j) && !IsBeforeHill(i, j) && !isChess(i + 1, j) && !IsFilledCamp(i + 1, j))
 				{
 					y2 = i + 1;
 					everyDo();
@@ -274,7 +281,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 				}
 				else
 				{
-					for (int k = 1;y2 < 11 && y2 > 0 && IsVerticalRailway(j) && !IsBeforeHill(y2, j) && !isChess(y2 + 1, j) && !IsFilledCamp(y2 + 1, j);k++)
+					for (int k = 1;y2 < 11 && y2 > 0 && IsVerticalRailway(i,j) && !IsBeforeHill(y2, j) && !isChess(y2 + 1, j) && !IsFilledCamp(y2 + 1, j);k++)
 					{
 						y2 = i + k;
 						everyDo();
@@ -283,7 +290,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 					}
 				}
 				//可以左上进行营:左上不是被占用的行营且它是行营
-				if (!IsFilledCamp(i - 1, j - 1) && IsMoveCamp(i - 1, j - 1))
+				if (IsMoveCamp(i - 1, j - 1) && !IsFilledCamp(i - 1, j - 1))
 				{
 					y2 = i - 1;
 					x2 = j - 1;
@@ -292,7 +299,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 				}
 				//可以右上进行营:右上不是被占用的行营且它是行营
-				if (!IsFilledCamp(i - 1, j + 1) && IsMoveCamp(i - 1, j + 1))
+				if (IsMoveCamp(i - 1, j + 1) && !IsFilledCamp(i - 1, j + 1))
 				{
 					y2 = i - 1;
 					x2 = j + 1;
@@ -301,7 +308,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 				}
 				//可以左下进行营:左下不是被占用的行营且它是行营
-				if (!IsFilledCamp(i + 1, j - 1) && IsMoveCamp(i + 1, j - 1))
+				if (IsMoveCamp(i + 1, j - 1) && !IsFilledCamp(i + 1, j - 1))
 				{
 					y2 = i + 1;
 					x2 = j - 1;
@@ -310,7 +317,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 				}
 				//可以右下进行营:右下不是被占用的行营且它是行营
-				if (!IsFilledCamp(i + 1, j + 1) && IsMoveCamp(i + 1, j + 1))
+				if (IsMoveCamp(i + 1, j + 1) && !IsFilledCamp(i + 1, j + 1))
 				{
 					y2 = i + 1;
 					x2 = j + 1;
@@ -419,14 +426,20 @@ string CulBestmove()
 	string cOutMessage = "BESTMOVE A0A0";
 
 	if (isgongzu)
+	{
 		tie(x1, y1, x2, y2) = gongzu();
+	}
 	else
+	{
+		writeFile("特种兵的日记.txt", "不拱卒了");
 		tie(x1, y1, x2, y2) = minimax();
+	}
 
 	cOutMessage[9] = y1 + 'A';
 	cOutMessage[10] = x1 + '0';
 	cOutMessage[11] = y2 + 'A';
 	cOutMessage[12] = x2 + '0';
+	writeFile("特种兵的日记.txt", cOutMessage);
 	return cOutMessage;
 }
 
