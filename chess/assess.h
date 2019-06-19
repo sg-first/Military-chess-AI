@@ -70,6 +70,7 @@ class assess
 
 	static float valueNear(int i, int j)
 	{
+		writeFile("特种兵的日记.txt", "计算附近区域开始");
 		vector<pos> allPos = getNearPos(i, j);
 		float eneMax = 0;
 		float friMax = 0;
@@ -147,7 +148,7 @@ public:
 
     static float getChessStrength(enemyChess *chess, bool sim = true) //获取敌方棋子的棋力值，通过概率分布计算
     {
-		writeFile("特种兵的日记.txt", "计算敌方棋力值开始：");
+		writeFile("特种兵的日记.txt", "计算敌方棋力值开始："+to_string((int)chess));
         float score = 0;
         for (unsigned int i = 0; i < chess->prob.size(); i++)
         {

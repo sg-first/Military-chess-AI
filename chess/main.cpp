@@ -36,48 +36,44 @@ void FreshMap(char *cInMessage, string cOutMessage)
 				c->determine(junqi);
 			}
 
+			enemyChess* c = ecOp::findChess(x1, y1);
 			switch (result)		//根据不同结果修改棋盘
 			{
-			case 0:			//对方棋子被己方吃掉
-			{
-				isgongzu = false;
-				enemyChess* c = ecOp::findChess(x1, y1);
-				c->less(ecOp::codeToType(cMap[y2][x2])); //对方棋子小于己方棋子
-				cMap[y1][x1] = '0'; //对方棋子消失，己方不必改变
-				ecOp::adjustDepth();
-				break;
-			}
-			case 1:			//对方吃掉己方棋子
-			{
-				isgongzu = false;
-				enemyChess* c = ecOp::findChess(x1, y1);
-				c->more(ecOp::codeToType(cMap[y2][x2])); //对方棋子大于己方棋子
-
-				cMap[y2][x2] = cMap[y1][x1]; //对方棋子移到己方位置（1是对方）
-				cMap[y1][x1] = '0';
-				c->setPos(x2, y2);
-				ecOp::adjustDepth();
-				break;
-			}
-			case 2:			//双方棋子对死
-			{
-				isgongzu = false;
-				enemyChess* c = ecOp::findChess(x1, y1);
-				c->equ(ecOp::codeToType(cMap[y2][x2])); //对方棋子等于己方棋子
-				cMap[y1][x1] = '0';
-				cMap[y2][x2] = '0';
-				ecOp::adjustDepth();
-				break;
-			}
-			case 3:			//对方移动棋子
-			{
-				enemyChess* c = ecOp::findChess(x1, y1);
-				c->setPos(x2, y2);
-				cMap[y2][x2] = cMap[y1][x1];
-				cMap[y1][x1] = '0';
-				ecOp::adjustDepth();
-				break;
-			}
+				case 0:			//对方棋子被己方吃掉
+				{
+					isgongzu = false;
+					c->less(ecOp::codeToType(cMap[y2][x2])); //对方棋子小于己方棋子
+					cMap[y1][x1] = '0'; //对方棋子消失，己方不必改变
+					ecOp::adjustDepth();
+					break;
+				}
+				case 1:			//对方吃掉己方棋子
+				{
+					isgongzu = false;
+					c->more(ecOp::codeToType(cMap[y2][x2])); //对方棋子大于己方棋子
+					c->setPos(x2, y2);
+					cMap[y2][x2] = cMap[y1][x1]; //对方棋子移到己方位置（1是对方）
+					cMap[y1][x1] = '0';
+					ecOp::adjustDepth();
+					break;
+				}
+				case 2:			//双方棋子对死
+				{
+					isgongzu = false;
+					c->equ(ecOp::codeToType(cMap[y2][x2])); //对方棋子等于己方棋子
+					cMap[y1][x1] = '0';
+					cMap[y2][x2] = '0';
+					ecOp::adjustDepth();
+					break;
+				}
+				case 3:			//对方移动棋子
+				{
+					c->setPos(x2, y2);
+					cMap[y2][x2] = cMap[y1][x1];
+					cMap[y1][x1] = '0';
+					ecOp::adjustDepth();
+					break;
+				}
 			}
 		}
 	}
@@ -431,7 +427,6 @@ string CulBestmove()
 	}
 	else
 	{
-		writeFile("特种兵的日记.txt", "不拱卒了");
 		tie(x1, y1, x2, y2) = minimax();
 	}
 
