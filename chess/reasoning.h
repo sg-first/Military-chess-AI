@@ -171,6 +171,22 @@ public:
 		variance = variance / SIZE;
 		return sqrt(variance);
 	}
+
+	enemyChess* copy()
+	{
+		enemyChess *newe = new enemyChess(this->x, this->y);
+		newe->isDie = this->isDie;
+		newe->prob = this->prob;
+		return newe;
+	}
+
+	void reset(enemyChess *e)
+	{
+		this->x = e->x;
+		this->y = e->y;
+		this->isDie = e->isDie;
+		this->prob = e->prob;
+	}
 };
 
 class ecOp
@@ -186,24 +202,6 @@ public:
 				return i;
 		}
 		return nullptr;
-	}
-
-	static void init() //开局时初始化所有敌方棋子对象
-	{
-		search_depth = minDepth;
-		//x为0-4，y为A-F（0-5）
-		for (int i = 0;i <= 4;i++)
-		{
-			for (int j = 0;j <= 5;j++)
-			{
-				if (i == 1 && (j == 2 || j == 4))
-					continue;
-				else if (i == 3 && (j == 2 || j == 4))
-					continue;
-				else
-					allEnemyChess.push_back(new enemyChess(i, j));
-			}
-		}
 	}
 
 	static int codeToType(char code)

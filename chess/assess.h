@@ -145,7 +145,7 @@ public:
 
     static float getChessStrength(enemyChess *chess, bool sim = true) //获取敌方棋子的棋力值，通过概率分布计算
     {
-		writeFile("特种兵的日记.txt", "计算敌方棋力值开始："+to_string((int)chess));
+		//writeFile("特种兵的日记.txt", "计算敌方棋力值开始："+to_string((int)chess));
         float score = 0;
         for (unsigned int i = 0; i < chess->prob.size(); i++)
         {
@@ -156,7 +156,7 @@ public:
                 weight = assess::codeToStrength2(i);
             score += chess->prob[i] * weight;
         }
-		writeFile("特种兵的日记.txt", "分数："+to_string(score)+" "+to_string(chess->sum()));
+		//writeFile("特种兵的日记.txt", "分数："+to_string(score)+" "+to_string(chess->sum()));
         return score / chess->sum();
     }
 

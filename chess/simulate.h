@@ -12,10 +12,13 @@ public:
 	{
 		if (cMap[y2][x2] == 'X') //是敌方要备份敌方的概率数据
 		{
-			this->oldEne = ecOp::findChess(x2, y2);
-			this->backupEne = new enemyChess(oldEne->x, oldEne->y);
-			this->backupEne->isDie = oldEne->isDie;
-			this->backupEne->prob = oldEne->prob;
+			this->oldEne2 = ecOp::findChess(x2, y2);
+			this->backupEne2 = oldEne2->copy();
+		}
+		if (cMap[y1][x1] == 'X')
+		{
+			this->oldEne1 = ecOp::findChess(x1, y1);
+			this->backupEne1 = oldEne1->copy();
 		}
 	}
 	int x1;
@@ -24,20 +27,24 @@ public:
 	int y2;
 	char c1;
 	char c2;
-	enemyChess *backupEne = nullptr;
-	enemyChess *oldEne = nullptr;
+	enemyChess *backupEne1 = nullptr;
+	enemyChess *oldEne1 = nullptr;
+	enemyChess *backupEne2 = nullptr;
+	enemyChess *oldEne2 = nullptr;
 
 	void back()
 	{
 		cMap[y1][x1] = c1;
 		cMap[y2][x2] = c2;
-		if (oldEne != nullptr)
+		if (oldEne1 != nullptr)
 		{
-			oldEne->x = backupEne->x;
-			oldEne->y = backupEne->y;
-			oldEne->isDie = backupEne->isDie;
-			oldEne->prob = backupEne->prob;
-			delete backupEne;
+			oldEne1->reset(backupEne1);
+			delete backupEne1;
+		}
+		if (oldEne2 != nullptr)
+		{
+			oldEne2->reset(backupEne2);
+			delete backupEne2;
 		}
 	}
 };
@@ -60,6 +67,7 @@ public:
 			if (isEne)
 			{
 				enemyChess *e = ecOp::findChess(x1, y1);
+				writeFile("特种兵的日记.txt", "移动敌方棋子"+to_string((int)e));
 				e->setPos(x2, y2);
 			}
 			newPos = oldPos;
@@ -78,42 +86,51 @@ public:
 			{
 			case 0: //实际的敌方胜
 			{
-				if (isEne == true) //老位置是实际的敌方，前进到新位置成功
+				if (isEne) //老位置是实际的敌方，敌方前进到新位置成功
 				{
 					enemyChess *e = ecOp::findChess(x1, y1);
+					writeFile("特种兵的日记.txt", "敌方胜 老位置敌方" + to_string((int)e));
 					e->setPos(x2, y2);
 					newPos = oldPos;
 					oldPos = '0';
 				}
-				else
+				else //老位置是实际的我方，前进失败
 					oldPos = '0';
 				break;
 			}
 			case 1: //实际的我方胜
 			{
-				if (isEne == false) //老位置是实际的我方，前进到新位置成功
+				if (!isEne) //老位置是实际的我方，我方前进到新位置成功
 				{
 					enemyChess *e = ecOp::findChess(x2, y2);
+					writeFile("特种兵的日记.txt", "我方胜 老位置我方" + to_string((int)e));
 					e->setDie();
 					newPos = oldPos;
 					oldPos = '0';
 				}
-				else
+				else //老位置是实际的敌方，前进失败
+				{
+					enemyChess *e = ecOp::findChess(x1, y1);
+					writeFile("特种兵的日记.txt", "我方胜 老位置敌方" + to_string((int)e));
+					e->setDie();
 					oldPos = '0';
+				}
 				break;
 			}
 			case 2: //对死
 			{
+				enemyChess *e;
 				if (isEne) //老位置是敌方
 				{
-					enemyChess *e = ecOp::findChess(x1, y1);
-					e->setDie();
+					e = ecOp::findChess(x1, y1);
+					writeFile("特种兵的日记.txt", "对死 老位置敌方" + to_string((int)e));
 				}
 				else //新位置是敌方
 				{
-					enemyChess *e = ecOp::findChess(x2, y2);
-					e->setDie();
+					e = ecOp::findChess(x2, y2);
+					writeFile("特种兵的日记.txt", "对死 新位置敌方" + to_string((int)e));
 				}
+				e->setDie();
 				newPos = '0';
 				oldPos = '0';
 				break;
