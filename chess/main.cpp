@@ -184,6 +184,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 		outputCMap();
 		recordStack::push(x1, y1, x2, y2, isEme); //实行这步走法
 		writeFile("特种兵的日记.txt", "实行走法成功");
+		outputCMap();
 		float value = -AlphaBeta(remainDepth - 1, -beta, -alpha, aiAction); //递归调用，获取这步走法的局面评估
 		writeFile("特种兵的日记.txt", "已返回估值：" + to_string(value));
 		recordStack::pop(); //回溯这步棋
@@ -216,8 +217,8 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 		{
 			if (isMovingChess(i, j) && !IsBaseCamp(i, j))  //己方不在大本营的可移动棋子
 			{
-				y1 = i; x1 = j; y2 = i; x2 = j;
 				writeFile("特种兵的日记.txt", "棋子扩展进行中：" + to_string(i) + "," + to_string(j));
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
 				if (i > 0 && !IsVerticalRailway(i,j) && !IsAfterHill(i, j) && !isChess(i - 1, j) && !IsFilledCamp(i - 1, j))
 				{
@@ -240,6 +241,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						writeFile("特种兵的日记.txt", "循环前移结束一次 考察下一种情况");
 					}
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以左移:不在最左列,左侧不是己方棋子,左侧不是被占用的行营
 				if (j > 0 && !IsAcrossRailway(i) && !isChess(i, j - 1) && !IsFilledCamp(i, j - 1))
 				{
@@ -262,6 +264,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						writeFile("特种兵的日记.txt", "循环左移结束一次 考察下一种情况");
 					}
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以右移:不在最右列,右侧不是己方棋子,右侧不是被占用的行营
 				if (j < 4 && !IsAcrossRailway(i) && !isChess(i, j + 1) && !IsFilledCamp(i, j + 1))
 				{
@@ -284,7 +287,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						writeFile("特种兵的日记.txt", "循环右移结束一次 考察下一种情况");
 					}
 				}
-
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以后移:不在最后列,不在山界前,后侧不是己方棋子,后侧不是被占用的行营
 				if (i < 11 && !IsVerticalRailway(i,j) && !IsBeforeHill(i, j) && !isChess(i + 1, j) && !IsFilledCamp(i + 1, j))
 				{
@@ -307,6 +310,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						writeFile("特种兵的日记.txt", "循环后移结束一次 考察下一种情况");
 					}
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以左上进行营:左上不是被占用的行营且它是行营
 				if (IsMoveCamp(i - 1, j - 1) && !IsFilledCamp(i - 1, j - 1))
 				{
@@ -318,6 +322,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 					writeFile("特种兵的日记.txt", "左上结束 考察下一种情况");
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以右上进行营:右上不是被占用的行营且它是行营
 				if (IsMoveCamp(i - 1, j + 1) && !IsFilledCamp(i - 1, j + 1))
 				{
@@ -329,6 +334,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 					writeFile("特种兵的日记.txt", "右上结束 考察下一种情况");
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以左下进行营:左下不是被占用的行营且它是行营
 				if (IsMoveCamp(i + 1, j - 1) && !IsFilledCamp(i + 1, j - 1))
 				{
@@ -340,6 +346,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 					writeFile("特种兵的日记.txt", "左下结束 考察下一种情况");
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以右下进行营:右下不是被占用的行营且它是行营
 				if (IsMoveCamp(i + 1, j + 1) && !IsFilledCamp(i + 1, j + 1))
 				{
@@ -351,6 +358,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 					writeFile("特种兵的日记.txt", "右下结束 考察下一种情况");
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以左上出行营:目前位置为行营且左上不是己方棋子
 				if (IsMoveCamp(i, j) && !isChess(i - 1, j - 1))
 				{
@@ -362,6 +370,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 					writeFile("特种兵的日记.txt", "左上2结束 考察下一种情况");
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以右上出行营:目前位置为行营且右上不是己方棋子
 				if (IsMoveCamp(i, j) && !isChess(i - 1, j + 1))
 				{
@@ -373,6 +382,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 					writeFile("特种兵的日记.txt", "右上2结束 考察下一种情况");
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以左下出行营:目前位置为行营且左下不是己方棋子
 				if (IsMoveCamp(i, j) && !isChess(i + 1, j - 1))
 				{
@@ -384,6 +394,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						return alpha;
 					writeFile("特种兵的日记.txt", "左下2结束 考察下一种情况");
 				}
+				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以右下出行营:目前位置为行营且右下不是己方棋子
 				if (IsMoveCamp(i, j) && !isChess(i + 1, j + 1))
 				{

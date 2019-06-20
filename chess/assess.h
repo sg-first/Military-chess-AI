@@ -75,19 +75,19 @@ class assess
 		float friMax = 0;
 		for (pos p : allPos) 
 		{
-			int i, j;
-			tie(i, j) = p;
-			if (cMap[i][j] != '0')
+			int i2, j2;
+			tie(i2, j2) = p;
+			if (cMap[i2][j2] != '0')
 			{
-				if (cMap[i][j] == 'X')
+				if (cMap[i2][j2] == 'X')
 				{
-					float s = getChessStrength(ecOp::findChess(j, i), false);
+					float s = getChessStrength(ecOp::findChess(j2, i2), false);
 					if (s > eneMax)
 						eneMax = s;
 				}
 				else
 				{
-					float s = codeToStrength2(ecOp::codeToType(cMap[i][j]));
+					float s = codeToStrength2(ecOp::codeToType(cMap[i2][j2]));
 					if (s > friMax)
 						friMax = s;
 				}
@@ -145,7 +145,6 @@ public:
 
     static float getChessStrength(enemyChess *chess, bool sim = true) //获取敌方棋子的棋力值，通过概率分布计算
     {
-		//writeFile("特种兵的日记.txt", "计算敌方棋力值开始："+to_string((int)chess));
         float score = 0;
         for (unsigned int i = 0; i < chess->prob.size(); i++)
         {
@@ -156,7 +155,6 @@ public:
                 weight = assess::codeToStrength2(i);
             score += chess->prob[i] * weight;
         }
-		//writeFile("特种兵的日记.txt", "分数："+to_string(score)+" "+to_string(chess->sum()));
         return score / chess->sum();
     }
 
@@ -170,15 +168,15 @@ public:
 				float value = 0;
                 if(IsMyChess(i,j))
                 {
-					writeFile("特种兵的日记.txt", "局面估值进行中："+to_string(i)+","+to_string(j));
+					//writeFile("特种兵的日记.txt", "局面估值进行中："+to_string(j)+","+to_string(i));
                     int type = ecOp::codeToType(cMap[i][j]);//cmap转换成type类型
-					writeFile("特种兵的日记.txt", "codeToStrength2："+to_string(codeToStrength2(type)));
+					/*writeFile("特种兵的日记.txt", "codeToStrength2："+to_string(codeToStrength2(type)));
 					writeFile("特种兵的日记.txt", "valueLocation："+to_string(valueLocation(i, j)));
 					writeFile("特种兵的日记.txt", "valueMotivation："+to_string(valueMotivation(type)));
-					writeFile("特种兵的日记.txt", "valuelast3line："+to_string(valuelast3line(i, j)));
-					writeFile("特种兵的日记.txt", "valueNear："+to_string(valueNear(i, j)));
-                    value = value + codeToStrength2(type) + valueLocation(i, j) + valueMotivation(type) + valuelast3line(i,j) + valueNear(i,j);
-					writeFile("特种兵的日记.txt", "目前棋子估值："+to_string(value));
+					writeFile("特种兵的日记.txt", "valuelast3line："+to_string(valuelast3line(i, j)));*/
+					//writeFile("特种兵的日记.txt", "valueNear："+to_string(valueNear(i, j)));
+                    value += + codeToStrength2(type) + valueLocation(i, j) + valueMotivation(type) + valuelast3line(i,j) + valueNear(i,j);
+					//writeFile("特种兵的日记.txt", "目前棋子估值："+to_string(value));
                 }
                 sumvalue+=value;
             }
