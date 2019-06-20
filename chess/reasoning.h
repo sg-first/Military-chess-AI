@@ -36,16 +36,16 @@ private:
 			prob[sub] = 0;
 	}
 
-	void otherDie() //其它棋子死去导致本棋子概率分布变化
+	void otherDie(enemyChess *thatChess) //其它棋子死去导致本棋子概率分布变化
 	{
 		if (isDetermine() != -1) //如果当前棋子已经确定
 			return; //不再处理
 		{
-			float sum = this->sum();
+			float sum = thatChess->sum();
 			float d = 1 / sum;
 			//对prob的所有维度减去d
-			for (int i = 0;i < SIZE;i++)
-				changeProbNum(i, d);
+			for (int i = 0; i < SIZE; i++)
+				changeProbNum(i, thatChess->prob[i] * d);
 		}
 	}
 
@@ -112,7 +112,7 @@ public:
 		for (enemyChess *i : allEnemyChess)
 		{
 			if (i != this)
-				i->otherDie();
+				i->otherDie(this);
 		}
 	}
 

@@ -70,7 +70,6 @@ class assess
 
 	static float valueNear(int i, int j)
 	{
-		writeFile("特种兵的日记.txt", "计算附近区域开始");
 		vector<pos> allPos = getNearPos(i, j);
 		float eneMax = 0;
 		float friMax = 0;
@@ -100,8 +99,6 @@ class assess
 			value -= eneMax;//对方相邻棋子负影响
 		if (friMax > myStrength)
 			value += friMax / 2;
-		writeFile("特种兵的日记.txt", "【附近区域eneMax】"+to_string(eneMax));
-		writeFile("特种兵的日记.txt", "【附近区域friMax】"+to_string(friMax));
 		return value;
 	}
 

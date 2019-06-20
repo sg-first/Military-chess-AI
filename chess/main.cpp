@@ -183,13 +183,16 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 	{
 		recordStack::push(x1, y1, x2, y2, isEme); //实行这步走法
 		float value = -AlphaBeta(remainDepth - 1, -beta, -alpha, aiAction); //递归调用，获取这步走法的局面评估
+		writeFile("特种兵的日记.txt", "已返回估值：" + to_string(value));
 		recordStack::pop(); //回溯这步棋
+		writeFile("特种兵的日记.txt", "回溯完成");
 		if (ecOp::search_depth == remainDepth && value > alpha)
 		{
 			aiAction = make_tuple(x1, y1, x2, y2); //若此时是最顶层，则记录最佳走法，贪心策略
 		}
 		if (value > alpha) //更新最大值
 			alpha = value;
+		writeFile("特种兵的日记.txt", "本步结束");
 	};
 
 	basicFun isMovingChess, isChess;
@@ -209,9 +212,10 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 	{
 		for (int j = 0;j < 5;j++)
 		{
-			y1 = i;x1 = j;y2 = i;x2 = j;
 			if (isMovingChess(i, j) && !IsBaseCamp(i, j))  //己方不在大本营的可移动棋子
 			{
+				y1 = i; x1 = j; y2 = i; x2 = j;
+				writeFile("特种兵的日记.txt", "棋子扩展进行中：" + to_string(i) + "," + to_string(j));
 				//可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
 				if (i > 0 && !IsVerticalRailway(i,j) && !IsAfterHill(i, j) && !isChess(i - 1, j) && !IsFilledCamp(i - 1, j))
 				{
@@ -357,6 +361,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 					if (alpha >= beta) //剪枝
 						return alpha;
 				}
+				writeFile("特种兵的日记.txt", "棋子扩展结束：" + to_string(i) + "," + to_string(j));
 			}
 		}
 	}
