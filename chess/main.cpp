@@ -519,6 +519,7 @@ void init()
 		}
 	}
 	isgongzu = true;
+	enemyChess::junqiEne = nullptr;
 }
 
 int main()

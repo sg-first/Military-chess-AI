@@ -169,6 +169,8 @@ public:
                 if(IsMyChess(i,j))
                 {
                     int type = ecOp::codeToType(cMap[i][j]);//cmap转换成type类型
+					if (enemyChess::junqiEne != nullptr && enemyChess::junqiEne->isDie)
+						value += 500;
                     value += + codeToStrength2(type) + valueLocation(i, j) + valueMotivation(type) + valuelast3line(i,j) + valueNear(i,j);
                 }
                 sumvalue+=value;

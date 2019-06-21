@@ -57,6 +57,8 @@ public:
 	bool isDie = false;
 	array<float, 12>prob;
 
+	static enemyChess* junqiEne; //军棋确定把指针放这里
+
 	float sum()
 	{
 		float sum = 0;
@@ -128,6 +130,9 @@ public:
 			return; //不再处理
 		else
 		{
+			if (type == junqi) //是军棋要标记上
+				enemyChess::junqiEne = this;
+
 			for (float &i : prob)
 				i = 0;
 			prob[type] = 1;
@@ -199,6 +204,7 @@ public:
 		this->prob = e->prob;
 	}
 };
+enemyChess* enemyChess::junqiEne;
 
 class ecOp
 {
