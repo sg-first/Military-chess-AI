@@ -258,7 +258,7 @@ public:
 		return sum / aliveChess;
 	}
 
-	static void adjustDepth()
+	static void adjustDepth() //fix:深度动态调整暂时取消
 	{
 		/*search_depth = 33.33*avgCertainty() + 1;
 		if (search_depth % 2 != 0) //必须是偶数层

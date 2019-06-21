@@ -163,7 +163,6 @@ public:
 					weight = assess::codeToStrength2(i);
 				score += chess->prob[i] * weight;
 			}
-			writeFile("特种兵的日记.txt", "chess sum:" + to_string(chess->sum()));
 			return score / chess->sum();
 		}
     }
