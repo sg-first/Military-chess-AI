@@ -67,7 +67,13 @@ class assess
 		else
 			return 0;
     }
-
+	static float valuecrosshill(int i)
+	{
+		if (i <= 5)
+			return 300*(6-i);
+		else
+			return 0;
+	}
 	static float valueNear(int i, int j)
 	{
 		vector<pos> allPos = getNearPos(i, j);
@@ -185,12 +191,15 @@ public:
 					float f3 = valueMotivation(type);
 					float f4 = valuelast3line(i, j);
 					float f5 = valueNear(i, j);
+					float f6 = valuecrosshill(i);
 					/*writeFile("特种兵的日记.txt", "codeToStrength2" + to_string(f1));
 					writeFile("特种兵的日记.txt", "valueLocation" + to_string(f2));
 					writeFile("特种兵的日记.txt", "valueMotivation" + to_string(f3));
 					writeFile("特种兵的日记.txt", "valuelast3line" + to_string(f4));
 					writeFile("特种兵的日记.txt", "valueNear" + to_string(f5));*/
-                    value += f1 + f2 + f3 + f4 + f5;
+					value += f1 + f2 + f3 + f4 + f5;
+					writeFile("特种兵的日记.txt", "valuecrosshill" + to_string(f6));
+					value += f6;
                 }
                 sumvalue+=value;
             }

@@ -173,9 +173,9 @@ string CulArray(char *cInMessage, int &iFirst, int &iTime, int &iStep)
 	iStep = iStep * 10 + (cInMessage[14] - '0');
 	//布局这个可能没啥可改的
 	if (iFirst == 0)	//先手
-		return "ARRAY abccddeeffggghhhiiijjkklj";
+		return "ARRAY "+ readFile("先手.txt");
 	else			//后手
-		return "ARRAY cbacddeeffggghhhiiijjkklj";
+		return "ARRAY " + readFile("后手.txt");
 }
 
 float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //搜索用的递归函数
@@ -383,49 +383,61 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 				//可以左上出行营:目前位置为行营且左上不是己方棋子
 				if (IsMoveCamp(i, j) && !isChess(i - 1, j - 1))
 				{
-					writeFile("特种兵的日记.txt", "考察左上2");
-					y2 = i - 1;
-					x2 = j - 1;
-					everyDo();
-					if (alpha >= beta) //剪枝
-						return alpha;
-					writeFile("特种兵的日记.txt", "左上2结束 考察下一种情况");
+					if (!(IsMoveCamp(i - 1, j - 1) && IsFilledCamp(i - 1, j - 1))) //如果是行营行营里不能有子
+					{
+						writeFile("特种兵的日记.txt", "考察左上2");
+						y2 = i - 1;
+						x2 = j - 1;
+						everyDo();
+						if (alpha >= beta) //剪枝
+							return alpha;
+						writeFile("特种兵的日记.txt", "左上2结束 考察下一种情况");
+					}
 				}
 				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以右上出行营:目前位置为行营且右上不是己方棋子
 				if (IsMoveCamp(i, j) && !isChess(i - 1, j + 1))
 				{
-					writeFile("特种兵的日记.txt", "考察右上2");
-					y2 = i - 1;
-					x2 = j + 1;
-					everyDo();
-					if (alpha >= beta) //剪枝
-						return alpha;
-					writeFile("特种兵的日记.txt", "右上2结束 考察下一种情况");
+					if (!(IsMoveCamp(i - 1, j + 1) && IsFilledCamp(i - 1, j + 1)))
+					{
+						writeFile("特种兵的日记.txt", "考察右上2");
+						y2 = i - 1;
+						x2 = j + 1;
+						everyDo();
+						if (alpha >= beta) //剪枝
+							return alpha;
+						writeFile("特种兵的日记.txt", "右上2结束 考察下一种情况");
+					}
 				}
 				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以左下出行营:目前位置为行营且左下不是己方棋子
 				if (IsMoveCamp(i, j) && !isChess(i + 1, j - 1))
 				{
-					writeFile("特种兵的日记.txt", "考察左下2");
-					y2 = i + 1;
-					x2 = j - 1;
-					everyDo();
-					if (alpha >= beta) //剪枝
-						return alpha;
-					writeFile("特种兵的日记.txt", "左下2结束 考察下一种情况");
+					if (!(IsMoveCamp(i + 1, j - 1) && IsFilledCamp(i + 1, j - 1)))
+					{
+						writeFile("特种兵的日记.txt", "考察左下2");
+						y2 = i + 1;
+						x2 = j - 1;
+						everyDo();
+						if (alpha >= beta) //剪枝
+							return alpha;
+						writeFile("特种兵的日记.txt", "左下2结束 考察下一种情况");
+					}
 				}
 				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以右下出行营:目前位置为行营且右下不是己方棋子
 				if (IsMoveCamp(i, j) && !isChess(i + 1, j + 1))
 				{
-					writeFile("特种兵的日记.txt", "考察右下2");
-					y2 = i + 1;
-					x2 = j + 1;
-					everyDo();
-					if (alpha >= beta) //剪枝
-						return alpha;
-					writeFile("特种兵的日记.txt", "右下2结束 考察下一种情况");
+					if (!(IsMoveCamp(i + 1, j + 1) && IsFilledCamp(i + 1, j + 1)))
+					{
+						writeFile("特种兵的日记.txt", "考察右下2");
+						y2 = i + 1;
+						x2 = j + 1;
+						everyDo();
+						if (alpha >= beta) //剪枝
+							return alpha;
+						writeFile("特种兵的日记.txt", "右下2结束 考察下一种情况");
+					}
 				}
 				writeFile("特种兵的日记.txt", "棋子扩展结束：" + to_string(i) + "," + to_string(j));
 			}
