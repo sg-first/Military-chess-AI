@@ -7,6 +7,20 @@
 
 bool isgongzu;
 
+void outputCMap()
+{
+	string content;
+	for (int i = 0; i <= 11; i++)
+	{
+		for (int j = 0; j <= 4; j++)
+		{
+			content += string(1, char(cMap[i][j])) + " ";
+		}
+		content += "\n";
+	}
+	writeFile("特种兵的日记.txt", content);
+}
+
 /* ************************************************************************ */
 /* 函数功能：根据裁判反馈刷新棋盘（完成）										*/
 /* 接口参数：																*/

@@ -168,15 +168,8 @@ public:
 				float value = 0;
                 if(IsMyChess(i,j))
                 {
-					//writeFile("特种兵的日记.txt", "局面估值进行中："+to_string(j)+","+to_string(i));
                     int type = ecOp::codeToType(cMap[i][j]);//cmap转换成type类型
-					/*writeFile("特种兵的日记.txt", "codeToStrength2："+to_string(codeToStrength2(type)));
-					writeFile("特种兵的日记.txt", "valueLocation："+to_string(valueLocation(i, j)));
-					writeFile("特种兵的日记.txt", "valueMotivation："+to_string(valueMotivation(type)));
-					writeFile("特种兵的日记.txt", "valuelast3line："+to_string(valuelast3line(i, j)));*/
-					//writeFile("特种兵的日记.txt", "valueNear："+to_string(valueNear(i, j)));
                     value += + codeToStrength2(type) + valueLocation(i, j) + valueMotivation(type) + valuelast3line(i,j) + valueNear(i,j);
-					//writeFile("特种兵的日记.txt", "目前棋子估值："+to_string(value));
                 }
                 sumvalue+=value;
             }

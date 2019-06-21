@@ -101,14 +101,14 @@ public:
 				if (!isEne) //老位置是实际的我方，我方前进到新位置成功
 				{
 					enemyChess *e = ecOp::findChess(x2, y2);
-					e->setDie();
+					e->setDie(true);
 					newPos = oldPos;
 					oldPos = '0';
 				}
 				else //老位置是实际的敌方，前进失败
 				{
 					enemyChess *e = ecOp::findChess(x1, y1);
-					e->setDie();
+					e->setDie(true);
 					oldPos = '0';
 				}
 				break;
@@ -124,7 +124,7 @@ public:
 				{
 					e = ecOp::findChess(x2, y2);
 				}
-				e->setDie();
+				e->setDie(true);
 				newPos = '0';
 				oldPos = '0';
 				break;

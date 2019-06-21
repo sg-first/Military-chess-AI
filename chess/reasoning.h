@@ -2,6 +2,7 @@
 #include <vector>
 #include <array>
 #include <math.h>
+#include "help.h"
 using namespace std;
 
 const int siling = 9;
@@ -17,7 +18,6 @@ const int junqi = 0;
 #define ALL 9
 const int dilei = 10;
 const int zhadan = 11;
-#define SIZE 12
 
 #define maxDepth 10
 #define minDepth 2
@@ -25,6 +25,7 @@ const int zhadan = 11;
 class enemyChess;
 
 vector<enemyChess*> allEnemyChess;
+int aliveChess = 25;
 
 class enemyChess
 {
@@ -38,13 +39,13 @@ private:
 
 	void otherDie(enemyChess *thatChess) //其它棋子死去导致本棋子概率分布变化
 	{
-		if (isDetermine() != -1) //如果当前棋子已经确定
-			return; //不再处理
+		//如果当前棋子已经确定或死亡的那个棋子已经确定（死亡的棋子确定意味着之前已经给其它棋子施加了它确定的影响）
+		if (this->isDetermine() == -1 && thatChess->isDetermine() == -1)
 		{
 			float sum = thatChess->sum();
 			float d = 1 / sum;
-			//对prob的所有维度减去d
-			for (int i = 0; i < SIZE; i++)
+			//对prob的所有维度减去d*prob[i]
+			for (int i = 0; i < prob.size(); i++)
 				changeProbNum(i, thatChess->prob[i] * d);
 		}
 	}
@@ -64,9 +65,9 @@ public:
 		return sum;
 	}
 
-	void equ(int type) //该棋子与某棋同尽（也就是被吃了）
+	void equ(int type,bool sim=false) //该棋子与某棋同尽（也就是被吃了）
 	{
-		setDie();
+		setDie(sim);
 		if (type != zhadan)
 		{
 			if (type == dilei) //我方是地雷，只能与炸弹同尽
@@ -76,9 +77,9 @@ public:
 		}
 	}
 
-	void less(int type) //设定该棋子小于某棋（也就是被吃了）
+	void less(int type,bool sim=false) //设定该棋子小于某棋（也就是被吃了）
 	{
-		setDie();
+		setDie(sim);
 		if (type != dilei && type != zhadan) //不支持小于地雷炸弹
 		{
 			for (int i = ALL;i > type;i--)
@@ -103,16 +104,21 @@ public:
 		}
 	}
 
-	void setDie()
+	void setDie(bool sim)
 	{
-		isDie = true;
-		x = -1;
-		y = -1;
-		//本棋子死亡，会导致【其它】棋子的概率分布变化
-		for (enemyChess *i : allEnemyChess)
+		if (!isDie)
 		{
-			if (i != this)
-				i->otherDie(this);
+			isDie = true;
+			if(!sim)
+				aliveChess--;
+			x = -1;
+			y = -1;
+			//本棋子死亡，会导致【其它】棋子的概率分布变化
+			for (enemyChess *i : allEnemyChess)
+			{
+				if (i != this)
+					i->otherDie(this);
+			}
 		}
 	}
 
@@ -155,21 +161,26 @@ public:
 
 	float certainty() //返回当前棋子类型评估的确定性，整体不确定性用来动态确定search_depth
 	{
-		//使用标准差计算不确定度
-		float sum = this->sum();
-		float plan[SIZE];
-		float average = 0;
-		float variance = 0;
-		for (int p = 0;p < SIZE;p++)
+		if (this->isDie)
+			return 0;
+		else
 		{
-			plan[p] = this->prob[p] / sum;
-			average = average + plan[p];
+			//使用标准差计算不确定度
+			float sum = this->sum();
+			float plan[12];
+			float average = 0;
+			float variance = 0;
+			for (int p = 0; p < prob.size(); p++)
+			{
+				plan[p] = this->prob[p] / sum;
+				average = average + plan[p];
+			}
+			average = average / prob.size();
+			for (int p = 0; p < prob.size(); p++)
+				variance = variance + (plan[p] - average)*(plan[p] - average);
+			variance = variance / prob.size();
+			return sqrt(variance);
 		}
-		average = average / SIZE;
-		for (int p = 0;p < SIZE;p++)
-			variance = variance + (plan[p] - average)*(plan[p] - average);
-		variance = variance / SIZE;
-		return sqrt(variance);
 	}
 
 	enemyChess* copy()
@@ -238,12 +249,16 @@ public:
 		float sum = 0;
 		for (enemyChess* c : allEnemyChess)
 			sum += c->certainty();
-		return sum / allEnemyChess.size();
+		writeFile("特种兵的日记.txt", "平均标准差为：" + to_string(sum) + " " + to_string(aliveChess));
+		return sum / aliveChess;
 	}
 
 	static void adjustDepth()
 	{
 		search_depth = 33.33*avgCertainty() + 1;
+		if (search_depth % 2 != 0) //必须是偶数层
+			search_depth++;
+		writeFile("特种兵的日记.txt", "调整到的搜索深度为："+to_string(search_depth));
 	}
 };
 int ecOp::search_depth;
