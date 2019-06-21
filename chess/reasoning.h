@@ -33,7 +33,7 @@ private:
 	void changeProbNum(int sub, int d) //改变从属某类棋子的概率分
 	{
 		prob[sub] -= d;
-		if (d < 0) //概率分不能为负
+		if (prob[sub] < 0) //概率分不能为负
 			prob[sub] = 0;
 	}
 

@@ -95,10 +95,14 @@ class assess
 		}
 		float value = 0;
 		float myStrength = codeToStrength2(ecOp::codeToType(cMap[i][j]));
-		if(eneMax>=myStrength)
+		if (eneMax >= myStrength)
+		{
 			value -= eneMax;//对方相邻棋子负影响
+		}
 		if (friMax > myStrength)
+		{
 			value += friMax / 2;
+		}
 		return value;
 	}
 
@@ -145,17 +149,23 @@ public:
 
     static float getChessStrength(enemyChess *chess, bool sim = true) //获取敌方棋子的棋力值，通过概率分布计算
     {
-        float score = 0;
-        for (unsigned int i = 0; i < chess->prob.size(); i++)
-        {
-            float weight;
-            if (sim)
-                weight = assess::codeToStrength(i); //当前维度的权重
-            else
-                weight = assess::codeToStrength2(i);
-            score += chess->prob[i] * weight;
-        }
-        return score / chess->sum();
+		if (chess->isDie)
+			return 0;
+		else
+		{
+			float score = 0;
+			for (unsigned int i = 0; i < chess->prob.size(); i++)
+			{
+				float weight;
+				if (sim)
+					weight = assess::codeToStrength(i); //当前维度的权重
+				else
+					weight = assess::codeToStrength2(i);
+				score += chess->prob[i] * weight;
+			}
+			writeFile("特种兵的日记.txt", "chess sum:" + to_string(chess->sum()));
+			return score / chess->sum();
+		}
     }
 
     static float valueEstimation(char cMap[12][5]) //局面评估
@@ -171,7 +181,17 @@ public:
                     int type = ecOp::codeToType(cMap[i][j]);//cmap转换成type类型
 					if (enemyChess::junqiEne != nullptr && enemyChess::junqiEne->isDie)
 						value += 500;
-                    value += + codeToStrength2(type) + valueLocation(i, j) + valueMotivation(type) + valuelast3line(i,j) + valueNear(i,j);
+					float f1 = codeToStrength2(type);
+					float f2 = valueLocation(i, j);
+					float f3 = valueMotivation(type);
+					float f4 = valuelast3line(i, j);
+					float f5 = valueNear(i, j);
+					/*writeFile("特种兵的日记.txt", "codeToStrength2" + to_string(f1));
+					writeFile("特种兵的日记.txt", "valueLocation" + to_string(f2));
+					writeFile("特种兵的日记.txt", "valueMotivation" + to_string(f3));
+					writeFile("特种兵的日记.txt", "valuelast3line" + to_string(f4));
+					writeFile("特种兵的日记.txt", "valueNear" + to_string(f5));*/
+                    value += f1 + f2 + f3 + f4 + f5;
                 }
                 sumvalue+=value;
             }

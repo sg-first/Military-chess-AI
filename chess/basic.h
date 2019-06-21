@@ -41,7 +41,7 @@ int IsMyChess(int i, int j)
 //是否为敌方棋子
 int IsEneChess(int i, int j)
 {
-	return cMap[i][j] == 'X';
+	return cMap[i][j] == 'X' || cMap[i][j] == 'L';
 }
 
 /* ************************************************************************ */
