@@ -39,7 +39,7 @@ int IsMyChess(int i, int j)
 }
 
 //是否为敌方棋子
-int IsEmeChess(int i, int j)
+int IsEneChess(int i, int j)
 {
 	return cMap[i][j] == 'X';
 }

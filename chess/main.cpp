@@ -201,25 +201,25 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 		writeFile("特种兵的日记.txt", "已返回估值：" + to_string(value));
 		recordStack::pop(); //回溯这步棋
 		if (ecOp::search_depth == remainDepth && value > alpha)
-		{
 			aiAction = make_tuple(x1, y1, x2, y2); //若此时是最顶层，则记录最佳走法，贪心策略
-		}
 		if (value > alpha) //更新最大值
 			alpha = value;
 		writeFile("特种兵的日记.txt", "本步结束");
 	};
 
-	basicFun isMovingChess, isChess;
+	basicFun isMovingChess, isChess, isInvChess;
 	//看看轮到我方走还是敌方走，决定用哪个基础判定函数
 	if (isEme) //敌方
 	{
 		isMovingChess = IsEmeMovingChess;
-		isChess = IsEmeChess;
+		isChess = IsEneChess;
+		isInvChess = IsMyChess;
 	}
 	else //我方
 	{
 		isMovingChess = IsMyMovingChess;
 		isChess = IsMyChess;
+		isInvChess = IsEneChess;
 	}
 
 	for (int i = 0;i < 12;i++) //对于当前己方的每个棋子
@@ -238,6 +238,8 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 					everyDo();
 					if (alpha >= beta) //剪枝
 						return alpha;
+					if (isInvChess(y2, x2)) //前方已经是敌方棋子，不能再前进
+						break;
 					writeFile("特种兵的日记.txt", "前移结束 考察下一种情况");
 				}
 				else
@@ -249,6 +251,8 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						everyDo();
 						if (alpha >= beta) //剪枝
 							return alpha;
+						if (isInvChess(y2, x2)) //前方已经是敌方棋子，不能再前进
+							break;
 						writeFile("特种兵的日记.txt", "循环前移结束一次 考察下一种情况");
 					}
 				}
@@ -272,6 +276,8 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						everyDo();
 						if (alpha >= beta) //剪枝
 							return alpha;
+						if (isInvChess(y2, x2)) //前方已经是敌方棋子，不能再前进
+							break;
 						writeFile("特种兵的日记.txt", "循环左移结束一次 考察下一种情况");
 					}
 				}
@@ -295,6 +301,8 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						everyDo();
 						if (alpha >= beta) //剪枝
 							return alpha;
+						if (isInvChess(y2, x2)) //前方已经是敌方棋子，不能再前进
+							break;
 						writeFile("特种兵的日记.txt", "循环右移结束一次 考察下一种情况");
 					}
 				}
@@ -318,6 +326,8 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						everyDo();
 						if (alpha >= beta) //剪枝
 							return alpha;
+						if (isInvChess(y2, x2)) //前方已经是敌方棋子，不能再前进
+							break;
 						writeFile("特种兵的日记.txt", "循环后移结束一次 考察下一种情况");
 					}
 				}

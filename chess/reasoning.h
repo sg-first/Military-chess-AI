@@ -249,16 +249,15 @@ public:
 		float sum = 0;
 		for (enemyChess* c : allEnemyChess)
 			sum += c->certainty();
-		writeFile("特种兵的日记.txt", "平均标准差为：" + to_string(sum) + " " + to_string(aliveChess));
 		return sum / aliveChess;
 	}
 
 	static void adjustDepth()
 	{
-		search_depth = 33.33*avgCertainty() + 1;
+		/*search_depth = 33.33*avgCertainty() + 1;
 		if (search_depth % 2 != 0) //必须是偶数层
 			search_depth++;
-		writeFile("特种兵的日记.txt", "调整到的搜索深度为："+to_string(search_depth));
+		writeFile("特种兵的日记.txt", "调整到的搜索深度为："+to_string(search_depth));*/
 	}
 };
 int ecOp::search_depth;
