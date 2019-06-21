@@ -5,12 +5,16 @@
 #include "basic.h"
 using namespace std;
 
+ofstream *ofile=nullptr;
+
 void writeFile(string path, string content)
 {
-	ofstream ofile;               //定义输出文件
-	ofile.open(path, std::ios::app);     //作为输出文件打开
-	ofile << content << endl;   //标题写入文件
-	ofile.close();                //关闭文件
+	if (ofile == nullptr)
+	{
+		ofile = new ofstream;
+		ofile->open(path, std::ios::app);
+	}
+	(*ofile) << content << endl;   //标题写入文件
 }
 
 void outputCMap()
