@@ -167,6 +167,7 @@ string CulArray(char *cInMessage, int &iFirst, int &iTime, int &iStep)
 float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //搜索用的递归函数
 {
 	writeFile("特种兵的日记.txt", "剩余深度："+to_string(remainDepth));
+	outputCMap();
 	if (remainDepth == 0) //到达搜索深度
 	{
 		float guzhi = assess::valueEstimation(cMap);
@@ -181,14 +182,10 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 	auto everyDo = [&]()
 	{
 		writeFile("特种兵的日记.txt", "考察开始"+to_string(x1)+","+to_string(y1));
-		outputCMap();
 		recordStack::push(x1, y1, x2, y2, isEme); //实行这步走法
-		writeFile("特种兵的日记.txt", "实行走法成功");
-		outputCMap();
 		float value = -AlphaBeta(remainDepth - 1, -beta, -alpha, aiAction); //递归调用，获取这步走法的局面评估
 		writeFile("特种兵的日记.txt", "已返回估值：" + to_string(value));
 		recordStack::pop(); //回溯这步棋
-		writeFile("特种兵的日记.txt", "回溯完成");
 		if (ecOp::search_depth == remainDepth && value > alpha)
 		{
 			aiAction = make_tuple(x1, y1, x2, y2); //若此时是最顶层，则记录最佳走法，贪心策略
