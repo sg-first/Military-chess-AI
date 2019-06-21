@@ -88,6 +88,8 @@ class assess
 				if (cMap[i2][j2] == 'X')
 				{
 					float s = getChessStrength(ecOp::findChess(j2, i2), false);
+					writeFile("特种兵的日记.txt", "计算敌方棋力值：" + to_string(j2)+","+to_string(i2)+
+						" "+to_string(s));
 					if (s > eneMax)
 						eneMax = s;
 				}
@@ -196,10 +198,9 @@ public:
 					writeFile("特种兵的日记.txt", "valueLocation" + to_string(f2));
 					writeFile("特种兵的日记.txt", "valueMotivation" + to_string(f3));
 					writeFile("特种兵的日记.txt", "valuelast3line" + to_string(f4));
-					writeFile("特种兵的日记.txt", "valueNear" + to_string(f5));*/
-					value += f1 + f2 + f3 + f4 + f5;
-					writeFile("特种兵的日记.txt", "valuecrosshill" + to_string(f6));
-					value += f6;
+					writeFile("特种兵的日记.txt", "valueNear" + to_string(f5));
+					writeFile("特种兵的日记.txt", "valuecrosshill" + to_string(f6));*/
+					value += f1 + f2 + f3 + f4 + f5 + f6;
                 }
                 sumvalue+=value;
             }
