@@ -204,7 +204,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 	}
 	else //我方
 	{
-		isMovingChess = IsMyChess;
+		isMovingChess = IsMyMovingChess;
 		isChess = IsMyChess;
 	}
 
@@ -407,14 +407,17 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 			}
 		}
 	}
+	writeFile("特种兵的日记.txt", "将返回估值"+to_string(alpha)+" "+to_string(remainDepth));
 	return alpha; //返回子节点中的最大值
 }
 
 moveTup minimax() //极大极小搜索启动
 {
-	int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-	moveTup result = make_tuple(x1, y1, x2, y2);
+	moveTup result = make_tuple(0, 0, 0, 0);
 	AlphaBeta(ecOp::search_depth, -10000, 10000, result);
+	int x1, y1, x2, y2;
+	tie(x1, y1, x2, y2) = result;
+	writeFile("特种兵的日记.txt", "得到最优走法" + to_string(x1) + "," + to_string(y1)+" "+to_string(x2)+","+to_string(y2));
 	return result;
 }
 
@@ -469,13 +472,9 @@ string CulBestmove()
 	string cOutMessage = "BESTMOVE A0A0";
 
 	if (isgongzu)
-	{
 		tie(x1, y1, x2, y2) = gongzu();
-	}
 	else
-	{
 		tie(x1, y1, x2, y2) = minimax();
-	}
 
 	cOutMessage[9] = y1 + 'A';
 	cOutMessage[10] = x1 + '0';
