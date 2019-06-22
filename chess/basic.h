@@ -187,7 +187,7 @@ int IsAcrossRailway(int i)
 }
 int IsVerticalRailway(int i,int j)
 {
-	if ((j == 0 || j == 4)&&(i>0&&i<11))
+	if ((j == 0 || j == 4) && (i > 0 && i < 11))
 		return 1;
 	else
 		return 0;

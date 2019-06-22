@@ -1,6 +1,8 @@
 #pragma once
 #include "reasoning.h"
 
+float eneMax = 0;
+
 class assess
 {
     static int codeToStrength(int type) //用于模拟走棋的固定子力值
@@ -69,15 +71,18 @@ class assess
     }
 	static float valuecrosshill(int i)
 	{
-		if (i <= 5)
-			return 300*(6-i);
+		if (i <= 5 && i >= 3)
+			return 30 * (6 - i) - eneMax;
+		else if (i < 3)
+			return 40 * (6 - i) - eneMax;
 		else
 			return 0;
 	}
+
 	static float valueNear(int i, int j)
 	{
 		vector<pos> allPos = getNearPos(i, j);
-		float eneMax = 0;
+		eneMax = 0;
 		float friMax = 0;
 		for (pos p : allPos) 
 		{
@@ -207,4 +212,15 @@ public:
         }
         return sumvalue;
     }
+
+	static bool isEneDilei(int i, int j)
+	{
+		if (cMap[i][j] == 'X')
+		{
+			auto e = ecOp::findChess(j, i);
+			if (e->isDetermine() == dilei)
+				return true;
+		}
+		return false;
+	}
 };

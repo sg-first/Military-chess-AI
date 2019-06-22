@@ -151,7 +151,7 @@ void FreshMap(char *cInMessage, string cOutMessage)
 string CulInfo(char *cInMessage, char *cVer)
 {
 	strcpy_s(cVer, 200, cInMessage + 5);
-	return "Northeastern University"; //返回参赛队名
+	return "SUT"; //返回参赛队名
 }
 
 /* ************************************************************************ */
@@ -195,16 +195,19 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 	//对于每一步走法
 	auto everyDo = [&]()
 	{
-		writeFile("特种兵的日记.txt", "考察开始"+to_string(x1)+","+to_string(y1));
-		recordStack::push(x1, y1, x2, y2, isEme); //实行这步走法
-		float value = -AlphaBeta(remainDepth - 1, -beta, -alpha, aiAction); //递归调用，获取这步走法的局面评估
-		writeFile("特种兵的日记.txt", "已返回估值：" + to_string(value));
-		recordStack::pop(); //回溯这步棋
-		if (ecOp::search_depth == remainDepth && value > alpha)
-			aiAction = make_tuple(x1, y1, x2, y2); //若此时是最顶层，则记录最佳走法，贪心策略
-		if (value > alpha) //更新最大值
-			alpha = value;
-		writeFile("特种兵的日记.txt", "本步结束");
+		if (!assess::isEneDilei(y2, x2))
+		{
+			writeFile("特种兵的日记.txt", "考察开始"+to_string(x1)+","+to_string(y1));
+			recordStack::push(x1, y1, x2, y2, isEme); //实行这步走法
+			float value = -AlphaBeta(remainDepth - 1, -beta, -alpha, aiAction); //递归调用，获取这步走法的局面评估
+			writeFile("特种兵的日记.txt", "已返回估值：" + to_string(value));
+			recordStack::pop(); //回溯这步棋
+			if (ecOp::search_depth == remainDepth && value > alpha)
+				aiAction = make_tuple(x1, y1, x2, y2); //若此时是最顶层，则记录最佳走法，贪心策略
+			if (value > alpha) //更新最大值
+				alpha = value;
+			writeFile("特种兵的日记.txt", "本步结束");
+		}
 	};
 
 	basicFun isMovingChess, isChess, isInvChess;
@@ -226,9 +229,10 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 	{
 		for (int j = 0;j < 5;j++)
 		{
+			writeFile("特种兵的日记.txt", "尝试进行扩展：" + to_string(j) + "," + to_string(i)+" "+to_string(isMovingChess(i, j))+" "+to_string(!IsBaseCamp(i, j)));
 			if (isMovingChess(i, j) && !IsBaseCamp(i, j))  //己方不在大本营的可移动棋子
 			{
-				writeFile("特种兵的日记.txt", "棋子扩展进行中：" + to_string(i) + "," + to_string(j));
+				writeFile("特种兵的日记.txt", "棋子扩展进行中：" + to_string(j) + "," + to_string(i));
 				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以前移:不在第一行,不在山界后,前方不是己方棋子,前方不是有棋子占领的行营
 				if (i > 0 && !IsVerticalRailway(i,j) && !IsAfterHill(i, j) && !isChess(i - 1, j) && !IsFilledCamp(i - 1, j))
@@ -238,23 +242,23 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 					everyDo();
 					if (alpha >= beta) //剪枝
 						return alpha;
-					if (isInvChess(y2, x2)) //前方已经是敌方棋子，不能再前进
-						break;
 					writeFile("特种兵的日记.txt", "前移结束 考察下一种情况");
 				}
 				else
 				{
-					for (int k = 1;y2 > 0 && y2 < 11 && IsVerticalRailway(i,j) && !IsAfterHill(y2, j) && !isChess(y2 - 1, j) && !IsFilledCamp(y2 - 1, j);k++)
+					for (int k = 1; y2 > 0 && y2 < 11 && IsVerticalRailway(y2,x2) && IsVerticalRailway(y2-1, j) && !IsAfterHill(y2, j) && !isChess(y2 - 1, j)
+						&& !IsFilledCamp(y2 - 1, j); k++)
 					{
 						writeFile("特种兵的日记.txt", "考察循环前移");
 						y2 = i - k;
 						everyDo();
 						if (alpha >= beta) //剪枝
 							return alpha;
-						if (isInvChess(y2, x2)) //前方已经是敌方棋子，不能再前进
+						if (isInvChess(y2, x2)) //当前位置已经是敌方棋子，不能再前进
 							break;
 						writeFile("特种兵的日记.txt", "循环前移结束一次 考察下一种情况");
 					}
+
 				}
 				y1 = i; x1 = j; y2 = i; x2 = j;
 				//可以左移:不在最左列,左侧不是己方棋子,左侧不是被占用的行营
@@ -319,7 +323,8 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 				}
 				else
 				{
-					for (int k = 1;y2 < 11 && y2 > 0 && IsVerticalRailway(i,j) && !IsBeforeHill(y2, j) && !isChess(y2 + 1, j) && !IsFilledCamp(y2 + 1, j);k++)
+					for (int k = 1; y2 < 11 && y2 > 0 && IsVerticalRailway(y2,x2) && IsVerticalRailway(y2+1, j) && !IsBeforeHill(y2, j) && !isChess(y2 + 1, j) &&
+						!IsFilledCamp(y2 + 1, j); k++)
 					{
 						writeFile("特种兵的日记.txt", "考察循环后移");
 						y2 = i + k;
@@ -439,7 +444,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 						writeFile("特种兵的日记.txt", "右下2结束 考察下一种情况");
 					}
 				}
-				writeFile("特种兵的日记.txt", "棋子扩展结束：" + to_string(i) + "," + to_string(j));
+				writeFile("特种兵的日记.txt", "棋子扩展结束：" + to_string(j) + "," + to_string(i));
 			}
 		}
 	}
@@ -450,7 +455,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //�
 moveTup minimax() //极大极小搜索启动
 {
 	moveTup result = make_tuple(0, 0, 0, 0);
-	AlphaBeta(ecOp::search_depth, -10000, 10000, result);
+	AlphaBeta(ecOp::search_depth, -100000, 100000, result);
 	int x1, y1, x2, y2;
 	tie(x1, y1, x2, y2) = result;
 	writeFile("特种兵的日记.txt", "得到最优走法" + to_string(x1) + "," + to_string(y1)+" "+to_string(x2)+","+to_string(y2));
