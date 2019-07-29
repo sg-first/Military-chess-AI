@@ -58,6 +58,7 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 		}
 	}
 	content4 += to_string(usNum) + " " + to_string(eneNum) + "\n";		//先输出我方总棋子数  再输出敌方总棋子数
+	content4 += "$";
 	writeFile("特种兵的日记.txt", content4);
 }
 
