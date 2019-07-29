@@ -5,70 +5,70 @@ float eneMax = 0;
 
 class assess
 {
-    static int codeToStrength(int type) //ÓÃÓÚÄ£Äâ×ßÆåµÄ¹Ì¶¨×ÓÁ¦Öµ
-    {
-        if(type==zhadan)
-            return shizhang; //Õ¨µ¯µÈÓÚÊ¦³¤
-        else if(type==dilei)
-            return tuanzhang; //µØÀ×µÈÓÚÍÅ³¤
-        else
-            return type; //±ğµÄÏÂ±ê¾ÍÊÇ°´ÆåÁ¦´óĞ¡ÅÅµÄ£¬Ö±½Ó·µ»Ø¼´¿É
-    }
-    static int codeToStrength2(int type) //ÓÃÓÚ¾ÖÃæÆÀ¹ÀµÄ¹Ì¶¨×ÓÁ¦Öµ
-    {
-        if (type == junqi)
-            return 12;//¾üÆå×ÓÁ¦ÖµÓ¦Îª0£¬ÔÚ´ó±¾ÓªµÄÆå×Ó-12
-        if (type == zhadan || type == shizhang)
-            return 22;
-        if (type == tuanzhang || type == dilei)
-            return 18;
-        if (type == gongbing)
-            return 10;
-        if (type == paizhang)
-            return 12;
-        if (type == lianzhang)
-            return 14;
-        if (type == yingzhang)
-            return 16;
-        if (type == lvzhang)
-            return 20;
+	static int codeToStrength(int type) //ç”¨äºæ¨¡æ‹Ÿèµ°æ£‹çš„å›ºå®šå­åŠ›å€¼
+	{
+		if (type == zhadan)
+			return shizhang; //ç‚¸å¼¹ç­‰äºå¸ˆé•¿
+		else if (type == dilei)
+			return tuanzhang; //åœ°é›·ç­‰äºå›¢é•¿
+		else
+			return type; //åˆ«çš„ä¸‹æ ‡å°±æ˜¯æŒ‰æ£‹åŠ›å¤§å°æ’çš„ï¼Œç›´æ¥è¿”å›å³å¯
+	}
+	static int codeToStrength2(int type) //ç”¨äºå±€é¢è¯„ä¼°çš„å›ºå®šå­åŠ›å€¼
+	{
+		if (type == junqi)
+			return 12;//å†›æ£‹å­åŠ›å€¼åº”ä¸º0ï¼Œåœ¨å¤§æœ¬è¥çš„æ£‹å­-12
+		if (type == zhadan || type == shizhang)
+			return 22;
+		if (type == tuanzhang || type == dilei)
+			return 18;
+		if (type == gongbing)
+			return 10;
+		if (type == paizhang)
+			return 12;
+		if (type == lianzhang)
+			return 14;
+		if (type == yingzhang)
+			return 16;
+		if (type == lvzhang)
+			return 20;
 		if (type == junzhang)
-            return 24;
+			return 24;
 		if (type == siling)
-            return 30;
-    }
+			return 30;
+	}
 
-	static float valueLocation(int i, int j) //Æå×ÓËùÔÚÎ»ÖÃÔö¼ÓÖµ
-    {
-        if (IsAcrossRailway(i) || IsVerticalRailway(i,j))//ÌúÂ·Ïß+5
-            return 5;
-        else if (IsBaseCamp(i,j))//´ó±¾Óª-12
-            return -12;
-        else if(IsMyMoveCamp(i,j))//¼º·½ĞĞÓª
-            return 8;
-        else if (IsEnemyMoveCamp(i,j)) //¶Ô·½ĞĞÓª
-            return 10;
-        else 
-            return 4;
-    }
+	static float valueLocation(int i, int j) //æ£‹å­æ‰€åœ¨ä½ç½®å¢åŠ å€¼
+	{
+		if (IsAcrossRailway(i) || IsVerticalRailway(i, j))//é“è·¯çº¿+5
+			return 5;
+		else if (IsBaseCamp(i, j))//å¤§æœ¬è¥-12
+			return -12;
+		else if (IsMyMoveCamp(i, j))//å·±æ–¹è¡Œè¥
+			return 8;
+		else if (IsEnemyMoveCamp(i, j)) //å¯¹æ–¹è¡Œè¥
+			return 10;
+		else
+			return 4;
+	}
 
-    static float valueMotivation(int type) //type±äÁ¿ÀàĞÍ£¿
-    {
-        if(type!=gongbing)
-            return codeToStrength2(type)/4;
-        else
-            return codeToStrength2(type)/9;
-    }
+	static float valueMotivation(int type) //typeå˜é‡ç±»å‹ï¼Ÿ
+	{
+		if (type != gongbing)
+			return codeToStrength2(type) / 4;
+		else
+			return codeToStrength2(type) / 9;
+	}
 
-    static float valuelast3line(int i,int j)
-    {
+	static float valuelast3line(int i, int j)
+	{
 		if (i > 8 && cMap[i][j] != 'l')
 		{
 			return 15 / shortestpathtojunqi(i, j);
 		}
 		else
 			return 0;
-    }
+	}
 	static float valuecrosshill(int i)
 	{
 		if (i <= 5 && i >= 3)
@@ -84,7 +84,7 @@ class assess
 		vector<pos> allPos = getNearPos(i, j);
 		eneMax = 0;
 		float friMax = 0;
-		for (pos p : allPos) 
+		for (pos p : allPos)
 		{
 			int i2, j2;
 			tie(i2, j2) = p;
@@ -93,8 +93,8 @@ class assess
 				if (cMap[i2][j2] == 'X')
 				{
 					float s = getChessStrength(ecOp::findChess(j2, i2), false);
-					writeFile("ÌØÖÖ±øµÄÈÕ¼Ç.txt", "¼ÆËãµĞ·½ÆåÁ¦Öµ£º" + to_string(j2)+","+to_string(i2)+
-						" "+to_string(s));
+					/*					writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", "è®¡ç®—æ•Œæ–¹æ£‹åŠ›å€¼ï¼š" + to_string(j2) + "," + to_string(i2) +
+											" " + to_string(s));*/
 					if (s > eneMax)
 						eneMax = s;
 				}
@@ -110,7 +110,7 @@ class assess
 		float myStrength = codeToStrength2(ecOp::codeToType(cMap[i][j]));
 		if (eneMax >= myStrength)
 		{
-			value -= eneMax;//¶Ô·½ÏàÁÚÆå×Ó¸ºÓ°Ïì
+			value -= eneMax;//å¯¹æ–¹ç›¸é‚»æ£‹å­è´Ÿå½±å“
 		}
 		if (friMax > myStrength)
 		{
@@ -120,48 +120,48 @@ class assess
 	}
 
 public:
-    static int ChessComparisons(char myc,enemyChess* enc) //±È½ÏÎÒ·½ÓëµĞ·½Æå×Ó´óĞ¡£¨0±»µĞ·½³Ô£¬1³ÔµôµĞ·½£¬2¶ÔËÀ£©
-    {
-        int mytype=ecOp::codeToType(myc);
-        int encType=enc->isDetermine();
-        //Éæ¼°¹¤±øµØÀ×µÄÌØÅĞ
-        if(mytype==gongbing)
-        {
-            //Ä¿Ç°½öÄÜÔÚÈ·¶¨µĞ·½Æå×ÓÀàĞÍµÄÇé¿öÏÂÌØÅĞÆôÓÃ
-            if(encType==gongbing || encType==zhadan)
-                return 2;
-            else if(encType==dilei)
-                return 1;
-            else
-                return 0;
-        }
-        else if(mytype==dilei)
-        {
-            if(encType==gongbing)
-                return 0;
-            else if(encType==zhadan)
-                return 2;
-            else
-                return 1;
-        }
-        //Éæ¼°Õ¨µ¯µÄÌØÅĞ
-        if(mytype==zhadan || encType==zhadan)
-            return 2;
-        else //²»ÊÇµØÀ×Õ¨µ¯¹¤±øµÄÇé¿ö
-        {
-            float myStrength=assess::codeToStrength(mytype);
-            float enemyStrength=getChessStrength(enc);
-            if(myStrength<enemyStrength)
-                return 0;
-            else if(myStrength>enemyStrength)
-                return 1;
-            else
-                return 2;
-        }
-    }
+	static int ChessComparisons(char myc, enemyChess* enc) //æ¯”è¾ƒæˆ‘æ–¹ä¸æ•Œæ–¹æ£‹å­å¤§å°ï¼ˆ0è¢«æ•Œæ–¹åƒï¼Œ1åƒæ‰æ•Œæ–¹ï¼Œ2å¯¹æ­»ï¼‰
+	{
+		int mytype = ecOp::codeToType(myc);
+		int encType = enc->isDetermine();
+		//æ¶‰åŠå·¥å…µåœ°é›·çš„ç‰¹åˆ¤
+		if (mytype == gongbing)
+		{
+			//ç›®å‰ä»…èƒ½åœ¨ç¡®å®šæ•Œæ–¹æ£‹å­ç±»å‹çš„æƒ…å†µä¸‹ç‰¹åˆ¤å¯ç”¨
+			if (encType == gongbing || encType == zhadan)
+				return 2;
+			else if (encType == dilei)
+				return 1;
+			else
+				return 0;
+		}
+		else if (mytype == dilei)
+		{
+			if (encType == gongbing)
+				return 0;
+			else if (encType == zhadan)
+				return 2;
+			else
+				return 1;
+		}
+		//æ¶‰åŠç‚¸å¼¹çš„ç‰¹åˆ¤
+		if (mytype == zhadan || encType == zhadan)
+			return 2;
+		else //ä¸æ˜¯åœ°é›·ç‚¸å¼¹å·¥å…µçš„æƒ…å†µ
+		{
+			float myStrength = assess::codeToStrength(mytype);
+			float enemyStrength = getChessStrength(enc);
+			if (myStrength < enemyStrength)
+				return 0;
+			else if (myStrength > enemyStrength)
+				return 1;
+			else
+				return 2;
+		}
+	}
 
-    static float getChessStrength(enemyChess *chess, bool sim = true) //»ñÈ¡µĞ·½Æå×ÓµÄÆåÁ¦Öµ£¬Í¨¹ı¸ÅÂÊ·Ö²¼¼ÆËã
-    {
+	static float getChessStrength(enemyChess *chess, bool sim = true) //è·å–æ•Œæ–¹æ£‹å­çš„æ£‹åŠ›å€¼ï¼Œé€šè¿‡æ¦‚ç‡åˆ†å¸ƒè®¡ç®—
+	{
 		if (chess->isDie)
 			return 0;
 		else
@@ -171,26 +171,27 @@ public:
 			{
 				float weight;
 				if (sim)
-					weight = assess::codeToStrength(i); //µ±Ç°Î¬¶ÈµÄÈ¨ÖØ
+					weight = assess::codeToStrength(i); //å½“å‰ç»´åº¦çš„æƒé‡
 				else
 					weight = assess::codeToStrength2(i);
 				score += chess->prob[i] * weight;
 			}
 			return score / chess->sum();
 		}
-    }
+	}
 
-    static float valueEstimation(char cMap[12][5]) //¾ÖÃæÆÀ¹À
-    {
-        float sumvalue=0; //valueµ¥¸ö×ÓÁ¦Öµ£¬sumvalue×ÓÁ¦ÖµÇóºÍ
-        for(int i=0;i<=11;i++)
-        {
-            for (int j = 0; j <= 4; j++)
-            {
+	static float valueEstimation(char cMap[12][5]) //å±€é¢è¯„ä¼°
+	{
+		float sumvalue = 0; //valueå•ä¸ªå­åŠ›å€¼ï¼Œsumvalueå­åŠ›å€¼æ±‚å’Œ
+		string valuelist;
+		for (int i = 0;i <= 11;i++)
+		{
+			for (int j = 0; j <= 4; j++)
+			{
 				float value = 0;
-                if(IsMyChess(i,j))
-                {
-                    int type = ecOp::codeToType(cMap[i][j]);//cmap×ª»»³ÉtypeÀàĞÍ
+				if (IsMyChess(i, j))
+				{
+					int type = ecOp::codeToType(cMap[i][j]);//cmapè½¬æ¢æˆtypeç±»å‹
 					if (enemyChess::junqiEne != nullptr && enemyChess::junqiEne->isDie)
 						value += 500;
 					float f1 = codeToStrength2(type);
@@ -199,19 +200,23 @@ public:
 					float f4 = valuelast3line(i, j);
 					float f5 = valueNear(i, j);
 					float f6 = valuecrosshill(i);
-					/*writeFile("ÌØÖÖ±øµÄÈÕ¼Ç.txt", "codeToStrength2" + to_string(f1));
-					writeFile("ÌØÖÖ±øµÄÈÕ¼Ç.txt", "valueLocation" + to_string(f2));
-					writeFile("ÌØÖÖ±øµÄÈÕ¼Ç.txt", "valueMotivation" + to_string(f3));
-					writeFile("ÌØÖÖ±øµÄÈÕ¼Ç.txt", "valuelast3line" + to_string(f4));
-					writeFile("ÌØÖÖ±øµÄÈÕ¼Ç.txt", "valueNear" + to_string(f5));
-					writeFile("ÌØÖÖ±øµÄÈÕ¼Ç.txt", "valuecrosshill" + to_string(f6));*/
+					/*writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", "codeToStrength2" + to_string(f1));
+					writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", "valueLocation" + to_string(f2));
+					writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", "valueMotivation" + to_string(f3));
+					writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", "valuelast3line" + to_string(f4));
+					writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", "valueNear" + to_string(f5));
+					writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", "valuecrosshill" + to_string(f6));*/
 					value += f1 + f2 + f3 + f4 + f5 + f6;
-                }
-                sumvalue+=value;
-            }
-        }
-        return sumvalue;
-    }
+				}
+				sumvalue += value;
+				valuelist += to_string(value) + " ";
+			}
+			valuelist += "\n";
+		}
+		valuelist += "$";
+		writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", valuelist);
+		return sumvalue;
+	}
 
 	static bool isEneDilei(int i, int j)
 	{
