@@ -6,10 +6,11 @@
 #include "simulate.h"
 
 bool isgongzu;
+int rounds = 0;
 
 void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 {
-	string content1, content2, content3, content4;
+	string content1, content2, content3, content4, content5;
 	int usNum = 0, eneNum = 0;
 	for (int i = 0; i <= 11; i++)		//输出棋盘
 	{
@@ -60,6 +61,9 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 	content4 += to_string(usNum) + " " + to_string(eneNum) + "\n";		//先输出我方总棋子数  再输出敌方总棋子数
 	content4 += "$";
 	writeFile("特种兵的日记.txt", content4);
+	content5 += to_string(rounds) + "\n";		//输出回合数
+	content5 += "$";
+	writeFile("特种兵的日记.txt", content5);
 }
 
 /* ************************************************************************ */
@@ -611,6 +615,7 @@ int main()
 		case 'G':								//GO 指令
 		{
 			FreshMap(cInMessage, cOutMessage);
+			rounds++;
 			outputAllneeds();
 			cOutMessage = CulBestmove();
 			cout << cOutMessage << endl;
@@ -619,6 +624,7 @@ int main()
 		case 'R':								//RESULT 指令
 		{
 			FreshMap(cInMessage, cOutMessage);
+			rounds++;
 			outputAllneeds();
 			break;
 		}
