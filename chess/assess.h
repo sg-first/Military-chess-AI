@@ -181,43 +181,30 @@ public:
 		}
     }
 
-	static float valueEstimation(char cMap[12][5]) //局面评估
+	static std::tuple<float, float, float, float, float, float, float, float>
+		valueEstimation(char cMap[12][5]) //局面评估
 	{
-		float sumvalue = 0; //value单个子力值，sumvalue子力值求和
+		float ff1 = 0, ff2 = 0, ff3 = 0, ff4 = 0, ff5 = 0, ff6 = 0, ff7 = 0; //每一项的总评分
 		for (int i = 0; i <= 11; i++)
 		{
 			for (int j = 0; j <= 4; j++)
 			{
-				float value = 0;
 				if (IsMyChess(i, j))
 				{
 					int type = ecOp::codeToType(cMap[i][j]);//cmap转换成type类型
 					if (enemyChess::junqiEne != nullptr && enemyChess::junqiEne->isDie)
-						value += 500;
-					float f1 = codeToStrength2(type);
-					float f2 = valueLocation(i, j);
-					float f3 = valueMotivation(type);
-					float f4 = valuelast3line(i, j);
-					float f5 = valueNear(i, j);
-					float f6 = valuecrosshill(i);
-					/*writeFile("特种兵的日记.txt", "codeToStrength2" + to_string(f1));
-					writeFile("特种兵的日记.txt", "valueLocation" + to_string(f2));
-					writeFile("特种兵的日记.txt", "valueMotivation" + to_string(f3));
-					writeFile("特种兵的日记.txt", "valuelast3line" + to_string(f4));
-					writeFile("特种兵的日记.txt", "valueNear" + to_string(f5));
-					writeFile("特种兵的日记.txt", "valuecrosshill" + to_string(f6));*/
-					value += f1 + f2 + f3 + f4 + f5 + f6;
-					ff1 += f1;
-					ff2 += f2;
-					ff3 += f3;
-					ff4 += f4;
-					ff5 += f5;
-					ff6 += f6;
+						ff7 += 500;
+					ff1 += codeToStrength2(type);
+					ff2 += valueLocation(i, j);
+					ff3 += valueMotivation(type);
+					ff4 += valuelast3line(i, j);
+					ff5 += valueNear(i, j);
+					ff6 += valuecrosshill(i);
 				}
-				sumvalue += value;
 			}
 		}
-		return sumvalue;
+		return make_tuple(ff1, ff2, ff3, ff4, ff5, ff6, ff7,
+			ff1 + ff2 + ff3 + ff4 + ff5 + ff6 + ff7);
 	}
 
 	static bool isEneDilei(int i, int j)

@@ -5,10 +5,8 @@
 #include "reasoning.h"
 #include "simulate.h"
 
-bool findJunqi = false;
 bool isgongzu;
 int rounds = 0;
-float ff1 = 0, ff2 = 0, ff3 = 0, ff4 = 0, ff5 = 0, ff6 = 0;
 
 void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 {
@@ -67,15 +65,11 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 	content5 += to_string(rounds) + "\n";		//输出回合数
 	content5 += "$";
 	writeFile("特种兵的日记.txt", content5);
-	content6 += to_string(ff1) + " " + to_string(ff2) + " " + to_string(ff3) + " " + to_string(ff4) + " " + to_string(ff5) + " " + to_string(ff6) + "\n";		//输出局面评估函数值
+	float ff1, ff2, ff3, ff4, ff5, ff6, ff7;
+	tie(ff1, ff2, ff3, ff4, ff5, ff6, ff7, ignore) = assess::valueEstimation(cMap);
+	content6 += to_string(ff1) + " " + to_string(ff2) + " " + to_string(ff3) + " " + to_string(ff4) + " " + to_string(ff5) + " " + to_string(ff6) + " " + to_string(ff7) + "\n";		//输出局面评估函数值
 	content6 += "@";		//回合结束使用@进行分割
 	writeFile("特种兵的日记.txt", content6);
-	ff1 = 0;
-	ff2 = 0;
-	ff3 = 0;
-	ff4 = 0;
-	ff5 = 0;
-	ff6 = 0;
 }
 
 /* ************************************************************************ */
@@ -98,9 +92,8 @@ void FreshMap(char* cInMessage, string cOutMessage)
 			y2 = cInMessage[5] - 'A';
 			x2 = cInMessage[6] - '0';
 			result = cInMessage[8] - '0';		//碰子结果
-			if (!findJunqi && cInMessage[10] >= 'A' && cInMessage[10] <= 'L') //对方司令战死后显示军旗位置
+			if (enemyChess::junqiEne == nullptr && cInMessage[10] >= 'A' && cInMessage[10] <= 'L') //对方司令战死后显示军旗位置
 			{
-				findJunqi = true;
 				enemyChess* c = ecOp::findChess(x1, y1);
 				c->determine(siling);
 				int junqiY = cInMessage[10] - 'A';
@@ -161,9 +154,8 @@ void FreshMap(char* cInMessage, string cOutMessage)
 
 		//然后看看这个棋子的结果
 		result = cInMessage[7] - '0'; //碰子结果
-		if (!findJunqi && cInMessage[8] == ' ' && cInMessage[9] >= 'A' && cInMessage[9] <= 'L') //对方司令战死后显示军旗位置
+		if (enemyChess::junqiEne == nullptr && cInMessage[8] == ' ' && cInMessage[9] >= 'A' && cInMessage[9] <= 'L') //对方司令战死后显示军旗位置
 		{
-			findJunqi = true;
 			enemyChess* c = ecOp::findChess(x2, y2);
 			c->determine(siling);
 			int junqiY = cInMessage[9] - 'A';
@@ -251,7 +243,8 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup& aiAction) //�
 {
 	if (remainDepth == 0) //到达搜索深度
 	{
-		float guzhi = assess::valueEstimation(cMap);
+		float guzhi;
+		tie(ignore, ignore, ignore, ignore, ignore, ignore, ignore, guzhi) = assess::valueEstimation(cMap);
 		return  guzhi;//返回局面评估
 	}
 
@@ -615,6 +608,7 @@ int main()
 		case 'E':								//END 指令
 		{
 			string jieguo = string(1, cInMessage[4]);
+			writeFile("特种兵的日记.txt", jieguo);
 			return 0;
 		}
 		default:
