@@ -22,9 +22,11 @@ void writeFile(string path, string content)
 string readFile(string file)
 {
 	ifstream infile;
-	infile.open(file.data());   //将文件流对象与文件连接起来 
+	infile.open(file.data());   //将文件流对象与文件连接起来
 	string content;
-	while (getline(infile, content));
+	string lineContent;
+	while (getline(infile, lineContent))
+		content += lineContent + "\n";
 	infile.close();             //关闭文件输入流
-	return content;
+	return content.substr(0, content.size() - 1);
 }

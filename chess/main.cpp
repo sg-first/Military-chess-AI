@@ -373,7 +373,6 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup& aiAction) //�
 					for (int k = 1; y2 < 11 && y2 > 0 && IsVerticalRailway(y2, x2) && IsVerticalRailway(y2 + 1, j) && !IsBeforeHill(y2, j) && !isChess(y2 + 1, j) &&
 						!IsFilledCamp(y2 + 1, j); k++)
 					{
-						//						writeFile("特种兵的日记.txt", "考察循环后移");
 						y2 = i + k;
 						everyDo();
 						if (alpha >= beta) //剪枝
@@ -585,7 +584,6 @@ int main()
 		case 'I':								//INFO指令（完成）
 		{
 			cOutMessage = CulInfo(cInMessage, cVer);
-			writeFile("zhiling.txt", cOutMessage);
 			cout << cOutMessage << endl; //将"NAME "指令传递给裁判系统
 			break;
 		}
@@ -595,7 +593,6 @@ int main()
 			//初始化
 			InitMap(cOutMessage);
 			init();
-			writeFile("zhiling.txt", cOutMessage);
 			cout << cOutMessage << endl;
 			break;
 		}
@@ -605,7 +602,6 @@ int main()
 			rounds++;
 			outputAllneeds();
 			cOutMessage = CulBestmove();
-			writeFile("zhiling.txt", cOutMessage);
 			cout << cOutMessage << endl;
 			break;
 		}
@@ -619,7 +615,6 @@ int main()
 		case 'E':								//END 指令
 		{
 			string jieguo = string(1, cInMessage[4]);
-			writeFile("特种兵的日记.txt", jieguo);
 			return 0;
 		}
 		default:
