@@ -38,7 +38,7 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 		float sumenemychess = (allEnemyChess[i]->sum());
 		for (int j = 0; j < 12; j++)
 		{
-			content2 += to_string((allEnemyChess[i]->prob[j]) / sumenemychess) + " ";
+			content2 += to_string((allEnemyChess[i]->prob[j])) + " ";
 		}
 		content2 += "\n";
 	}
