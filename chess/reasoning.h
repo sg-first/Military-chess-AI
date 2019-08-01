@@ -30,21 +30,21 @@ int aliveChess = 25;
 class enemyChess
 {
 private:
-	void changeProbNum(int sub, int d) //¸Ä±ä´ÓÊôÄ³ÀàÆå×ÓµÄ¸ÅÂÊ·Ö
+	void changeProbNum(int sub, float d) //æ”¹å˜ä»å±æŸç±»æ£‹å­çš„æ¦‚ç‡åˆ†
 	{
 		prob[sub] -= d;
-		if (prob[sub] < 0) //¸ÅÂÊ·Ö²»ÄÜÎª¸º
+		if (prob[sub] < 0) //æ¦‚ç‡åˆ†ä¸èƒ½ä¸ºè´Ÿ
 			prob[sub] = 0;
 	}
 
-	void otherDie(enemyChess *thatChess) //ÆäËüÆå×ÓËÀÈ¥µ¼ÖÂ±¾Æå×Ó¸ÅÂÊ·Ö²¼±ä»¯
+	void otherDie(enemyChess *thatChess) //å…¶å®ƒæ£‹å­æ­»å»å¯¼è‡´æœ¬æ£‹å­æ¦‚ç‡åˆ†å¸ƒå˜åŒ–
 	{
-		//Èç¹ûµ±Ç°Æå×ÓÒÑ¾­È·¶¨»òËÀÍöµÄÄÇ¸öÆå×ÓÒÑ¾­È·¶¨£¨ËÀÍöµÄÆå×ÓÈ·¶¨ÒâÎ¶×ÅÖ®Ç°ÒÑ¾­¸øÆäËüÆå×ÓÊ©¼ÓÁËËüÈ·¶¨µÄÓ°Ïì£©
+		//å¦‚æœå½“å‰æ£‹å­å·²ç»ç¡®å®šæˆ–æ­»äº¡çš„é‚£ä¸ªæ£‹å­å·²ç»ç¡®å®šï¼ˆæ­»äº¡çš„æ£‹å­ç¡®å®šæ„å‘³ç€ä¹‹å‰å·²ç»ç»™å…¶å®ƒæ£‹å­æ–½åŠ äº†å®ƒç¡®å®šçš„å½±å“ï¼‰
 		if (this->isDetermine() == -1 && thatChess->isDetermine() == -1)
 		{
 			float sum = thatChess->sum();
 			float d = 1 / sum;
-			//¶ÔprobµÄËùÓĞÎ¬¶È¼õÈ¥d*prob[i]
+			//å¯¹probçš„æ‰€æœ‰ç»´åº¦å‡å»d*prob[i]
 			for (int i = 0; i < prob.size(); i++)
 				changeProbNum(i, thatChess->prob[i] * d);
 		}
@@ -57,7 +57,7 @@ public:
 	bool isDie = false;
 	array<float, 12>prob;
 
-	static enemyChess* junqiEne; //¾üÆåÈ·¶¨°ÑÖ¸Õë·ÅÕâÀï
+	static enemyChess* junqiEne; //å†›æ£‹ç¡®å®šæŠŠæŒ‡é’ˆæ”¾è¿™é‡Œ
 
 	float sum()
 	{
@@ -67,42 +67,42 @@ public:
 		return sum;
 	}
 
-	void equ(int type,bool sim=false) //¸ÃÆå×ÓÓëÄ³ÆåÍ¬¾¡£¨Ò²¾ÍÊÇ±»³ÔÁË£©
+	void equ(int type,bool sim=false) //è¯¥æ£‹å­ä¸æŸæ£‹åŒå°½ï¼ˆä¹Ÿå°±æ˜¯è¢«åƒäº†ï¼‰
 	{
 		setDie(sim);
 		if (type != zhadan)
 		{
-			if (type == dilei) //ÎÒ·½ÊÇµØÀ×£¬Ö»ÄÜÓëÕ¨µ¯Í¬¾¡
+			if (type == dilei) //æˆ‘æ–¹æ˜¯åœ°é›·ï¼Œåªèƒ½ä¸ç‚¸å¼¹åŒå°½
 				determine(zhadan);
 			else
-				determine(type); //³ı´ËÇé¿öÖ®Íâ¾ÍÒ»Ñù
+				determine(type); //é™¤æ­¤æƒ…å†µä¹‹å¤–å°±ä¸€æ ·
 		}
 	}
 
-	void less(int type,bool sim=false) //Éè¶¨¸ÃÆå×ÓĞ¡ÓÚÄ³Æå£¨Ò²¾ÍÊÇ±»³ÔÁË£©
+	void less(int type,bool sim=false) //è®¾å®šè¯¥æ£‹å­å°äºæŸæ£‹ï¼ˆä¹Ÿå°±æ˜¯è¢«åƒäº†ï¼‰
 	{
 		setDie(sim);
-		if (type != dilei && type != zhadan) //²»Ö§³ÖĞ¡ÓÚµØÀ×Õ¨µ¯
+		if (type != dilei && type != zhadan) //ä¸æ”¯æŒå°äºåœ°é›·ç‚¸å¼¹
 		{
 			for (int i = ALL;i > type;i--)
-				prob[i] = 0; //°Ñ´óÓÚtypeµÄËùÓĞ¸ÅÂÊ·ÖÇåÁã
+				prob[i] = 0; //æŠŠå¤§äºtypeçš„æ‰€æœ‰æ¦‚ç‡åˆ†æ¸…é›¶
 		}
 	}
 
-	void more(int type) //Éè¶¨¸ÃÆå×Ó´óÓÚÄ³Æå
+	void more(int type) //è®¾å®šè¯¥æ£‹å­å¤§äºæŸæ£‹
 	{
 		prob[zhadan] = 0;
 
-		if (type == zhadan) //²»¿ÉÄÜ³ÔµôÕ¨µ¯
+		if (type == zhadan) //ä¸å¯èƒ½åƒæ‰ç‚¸å¼¹
 			return;
 		if (type == siling)
-			determine(dilei); //°ÑË¾Áî³ÔÁËÒ»¶¨ÊÇµØÀ×
-		else if (type == dilei) //°ÑµØÀ×³ÔÁËÒ»¶¨ÊÇ¹¤±ø
+			determine(dilei); //æŠŠå¸ä»¤åƒäº†ä¸€å®šæ˜¯åœ°é›·
+		else if (type == dilei) //æŠŠåœ°é›·åƒäº†ä¸€å®šæ˜¯å·¥å…µ
 			determine(gongbing);
 		else
 		{
 			for (int i = 0;i < type;i++)
-				prob[i] = 0; //°ÑĞ¡ÓÚtypeµÄËùÓĞ¸ÅÂÊ·ÖÇåÁã
+				prob[i] = 0; //æŠŠå°äºtypeçš„æ‰€æœ‰æ¦‚ç‡åˆ†æ¸…é›¶
 		}
 	}
 
@@ -115,7 +115,7 @@ public:
 				aliveChess--;
 			x = -1;
 			y = -1;
-			//±¾Æå×ÓËÀÍö£¬»áµ¼ÖÂ¡¾ÆäËü¡¿Æå×ÓµÄ¸ÅÂÊ·Ö²¼±ä»¯
+			//æœ¬æ£‹å­æ­»äº¡ï¼Œä¼šå¯¼è‡´ã€å…¶å®ƒã€‘æ£‹å­çš„æ¦‚ç‡åˆ†å¸ƒå˜åŒ–
 			for (enemyChess *i : allEnemyChess)
 			{
 				if (i != this)
@@ -124,19 +124,19 @@ public:
 		}
 	}
 
-	void determine(int type) //È·ÈÏ¸ÃÆå×ÓÎªÄ³Æå
+	void determine(int type) //ç¡®è®¤è¯¥æ£‹å­ä¸ºæŸæ£‹
 	{
-		if (isDetermine() != -1) //Èç¹ûµ±Ç°Æå×ÓÒÑ¾­È·¶¨
-			return; //²»ÔÙ´¦Àí
+		if (isDetermine() != -1) //å¦‚æœå½“å‰æ£‹å­å·²ç»ç¡®å®š
+			return; //ä¸å†å¤„ç†
 		else
 		{
-			if (type == junqi) //ÊÇ¾üÆåÒª±ê¼ÇÉÏ
+			if (type == junqi) //æ˜¯å†›æ£‹è¦æ ‡è®°ä¸Š
 				enemyChess::junqiEne = this;
 
 			for (float &i : prob)
 				i = 0;
 			prob[type] = 1;
-			//ĞÂ²úÉúÈ·¶¨µÄÆå×Ó£¬»áµ¼ÖÂ¡¾ÆäËü¡¿Æå×ÓµÄ¸ÅÂÊ·Ö²¼±ä»¯
+			//æ–°äº§ç”Ÿç¡®å®šçš„æ£‹å­ï¼Œä¼šå¯¼è‡´ã€å…¶å®ƒã€‘æ£‹å­çš„æ¦‚ç‡åˆ†å¸ƒå˜åŒ–
 			for (enemyChess *i : allEnemyChess)
 			{
 				if (i != this)
@@ -145,7 +145,7 @@ public:
 		}
 	}
 
-	int isDetermine() //·µ»Øµ±Ç°Æå×ÓµÄÈ·¶¨ÀàĞÍ£¬-1Îª²»È·¶¨
+	int isDetermine() //è¿”å›å½“å‰æ£‹å­çš„ç¡®å®šç±»å‹ï¼Œ-1ä¸ºä¸ç¡®å®š
 	{
 		int type = -1;
 		for (unsigned int i = 0;i < prob.size();i++)
@@ -164,13 +164,13 @@ public:
 		this->y = y;
 	}
 
-	float certainty() //·µ»Øµ±Ç°Æå×ÓÀàĞÍÆÀ¹ÀµÄÈ·¶¨ĞÔ£¬ÕûÌå²»È·¶¨ĞÔÓÃÀ´¶¯Ì¬È·¶¨search_depth
+	float certainty() //è¿”å›å½“å‰æ£‹å­ç±»å‹è¯„ä¼°çš„ç¡®å®šæ€§ï¼Œæ•´ä½“ä¸ç¡®å®šæ€§ç”¨æ¥åŠ¨æ€ç¡®å®šsearch_depth
 	{
 		if (this->isDie)
 			return 0;
 		else
 		{
-			//Ê¹ÓÃ±ê×¼²î¼ÆËã²»È·¶¨¶È
+			//ä½¿ç”¨æ ‡å‡†å·®è®¡ç®—ä¸ç¡®å®šåº¦
 			float sum = this->sum();
 			float plan[12];
 			float average = 0;
@@ -211,7 +211,7 @@ class ecOp
 public:
 	static int search_depth;
 
-	static enemyChess* findChess(int x, int y) //¸ø×ø±êÕÒÒ»¸öÆå×Ó¶ÔÏó
+	static enemyChess* findChess(int x, int y) //ç»™åæ ‡æ‰¾ä¸€ä¸ªæ£‹å­å¯¹è±¡
 	{
 		for (enemyChess* i : allEnemyChess)
 		{
@@ -258,12 +258,12 @@ public:
 		return sum / aliveChess;
 	}
 
-	static void adjustDepth() //fix:Éî¶È¶¯Ì¬µ÷ÕûÔİÊ±È¡Ïû
+	static void adjustDepth() //fix:æ·±åº¦åŠ¨æ€è°ƒæ•´æš‚æ—¶å–æ¶ˆ
 	{
 		/*search_depth = 33.33*avgCertainty() + 1;
-		if (search_depth % 2 != 0) //±ØĞëÊÇÅ¼Êı²ã
+		if (search_depth % 2 != 0) //å¿…é¡»æ˜¯å¶æ•°å±‚
 			search_depth++;
-		writeFile("ÌØÖÖ±øµÄÈÕ¼Ç.txt", "µ÷Õûµ½µÄËÑË÷Éî¶ÈÎª£º"+to_string(search_depth));*/
+		writeFile("ç‰¹ç§å…µçš„æ—¥è®°.txt", "è°ƒæ•´åˆ°çš„æœç´¢æ·±åº¦ä¸ºï¼š"+to_string(search_depth));*/
 	}
 };
 int ecOp::search_depth;
