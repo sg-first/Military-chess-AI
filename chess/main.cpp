@@ -230,9 +230,9 @@ string CulArray(char *cInMessage, int &iFirst, int &iTime, int &iStep)
 	iStep = iStep * 10 + (cInMessage[14] - '0');
 	//布局这个可能没啥可改的
 	if (iFirst == 0)	//先手
-		return "ARRAY "+ readFile("先手.txt");
+		return "ARRAY "+ readFile("first.txt");
 	else			//后手
-		return "ARRAY " + readFile("后手.txt");
+		return "ARRAY " + readFile("second.txt");
 }
 
 float AlphaBeta(int remainDepth, float alpha, float beta, moveTup &aiAction) //搜索用的递归函数
