@@ -6,11 +6,13 @@
 using namespace std;
 
 ofstream *ofile=nullptr;
+string lastPath;
 
 void writeFile(string path, string content)
 {
-	if (ofile == nullptr)
+	if (ofile == nullptr || path!=lastPath)
 	{
+		lastPath = path;
 		ofile = new ofstream;
 		ofile->open(path, std::ios::app);
 	}
