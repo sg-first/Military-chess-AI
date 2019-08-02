@@ -94,8 +94,6 @@ class assess
 				if (cMap[i2][j2] == 'X')
 				{
 					float s = getChessStrength(ecOp::findChess(j2, i2), false);
-//					writeFile("特种兵的日记.txt", "计算敌方棋力值：" + to_string(j2)+","+to_string(i2)+
-//						" "+to_string(s));
 					if (s > eneMax)
 						eneMax = s;
 				}

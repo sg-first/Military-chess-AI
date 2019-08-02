@@ -10,12 +10,12 @@ class moveRecord
 public:
 	moveRecord(int x1, int y1, int x2, int y2) : x1(x1), y1(y1), x2(x2), y2(y2), c1(cMap[y1][x1]), c2(cMap[y2][x2]) 
 	{
-		if (cMap[y2][x2] == 'X') //是敌方要备份敌方的概率数据
+		if (cMap[y2][x2] == 'X' || cMap[y2][x2] == 'L') //是敌方要备份敌方的概率数据
 		{
 			this->oldEne2 = ecOp::findChess(x2, y2);
 			this->backupEne2 = oldEne2->copy();
 		}
-		if (cMap[y1][x1] == 'X')
+		if (cMap[y1][x1] == 'X' || cMap[y1][x1] == 'L')
 		{
 			this->oldEne1 = ecOp::findChess(x1, y1);
 			this->backupEne1 = oldEne1->copy();

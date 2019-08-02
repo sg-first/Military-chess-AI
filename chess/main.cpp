@@ -33,7 +33,7 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 	writeFile("特种兵的日记.txt", content1);
 	for (int i = 0; i < size(allEnemyChess); i++)		//输出概率表
 	{
-		float sumenemychess = (allEnemyChess[i]->sum());
+		float sum = (allEnemyChess[i]->sum());
 		for (int j = 0; j < 12; j++)
 		{
 			content2 += to_string((allEnemyChess[i]->prob[j])) + " ";
