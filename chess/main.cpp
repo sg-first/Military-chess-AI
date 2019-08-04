@@ -35,7 +35,7 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 		float sum = (allEnemyChess[i]->sum());
 		for (int j = 0; j < 12; j++)
 		{
-			content2 += to_string((allEnemyChess[i]->prob[j])) + " ";
+			content2 += to_string((allEnemyChess[i]->prob[j])/sum) + " ";
 		}
 		content2 += "\n";
 	}
@@ -253,12 +253,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup& aiAction) //�
 	//对于每一步走法
 	auto everyDo = [&]()
 	{
-		int isMyGongbing = 0;
-		if (cMap[x1][y1] == 'i')//判断x1,y1是不是工兵
-		{
-			isMyGongbing = 1;
-		}
-		if (!assess::isEneDilei(y2, x2)||isMyGongbing)
+		if (!assess::isEneDilei(y2, x2) || cMap[x1][y1] == 'i')
 		{
 			recordStack::push(x1, y1, x2, y2, isEme); //实行这步走法
 			float value = -AlphaBeta(remainDepth - 1, -beta, -alpha, aiAction); //递归调用，获取这步走法的局面评估
