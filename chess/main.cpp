@@ -253,7 +253,7 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup& aiAction) //�
 	//对于每一步走法
 	auto everyDo = [&]()
 	{
-		if (!assess::isEneDilei(y2, x2) || cMap[x1][y1] == 'i')
+		if (!assess::isEneDilei(y2, x2) || cMap[y1][x1] == 'i')
 		{
 			recordStack::push(x1, y1, x2, y2, isEme); //实行这步走法
 			float value = -AlphaBeta(remainDepth - 1, -beta, -alpha, aiAction); //递归调用，获取这步走法的局面评估
