@@ -118,11 +118,6 @@ class assess
 		}
 		return value;
 	}
-	static float valuefuckdilei(int i, int j)
-	{
-
-	}
-
 public:
 	static int ChessComparisons(char myc, enemyChess* enc) //比较我方与敌方棋子大小（0被敌方吃，1吃掉敌方，2对死）
 	{
