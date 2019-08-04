@@ -1,5 +1,4 @@
-#include "pch.h"
-
+//#include "pch.h"
 #include "basic.h"
 #include "help.h"
 #include "reasoning.h"
@@ -250,11 +249,16 @@ float AlphaBeta(int remainDepth, float alpha, float beta, moveTup& aiAction) //�
 
 	bool isEme = remainDepth % 2;//根据深度判断当前玩家（规定深度为偶数，0为我方1为敌方）
 	int x1, y1, x2, y2;
-
+	
 	//对于每一步走法
 	auto everyDo = [&]()
 	{
-		if (!assess::isEneDilei(y2, x2))
+		int isMyGongbing = 0;
+		if (cMap[x1][y1] == 'i')//判断x1,y1是不是工兵
+		{
+			isMyGongbing = 1;
+		}
+		if (!assess::isEneDilei(y2, x2)||isMyGongbing)
 		{
 			recordStack::push(x1, y1, x2, y2, isEme); //实行这步走法
 			float value = -AlphaBeta(remainDepth - 1, -beta, -alpha, aiAction); //递归调用，获取这步走法的局面评估
