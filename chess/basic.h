@@ -32,7 +32,7 @@ typedef tuple<int, int> pos;
 /* ************************************************************************ */
 int IsMyChess(int i, int j)
 {
-	if (cMap[i][j] >= 'a'&& cMap[i][j] <= 'l') //warn:crossline
+	if (cMap[i][j] >= 'a' && cMap[i][j] <= 'l') //warn:crossline
 		return 1;
 	else
 		return 0;
@@ -185,7 +185,7 @@ int IsAcrossRailway(int i)
 	else
 		return 0;
 }
-int IsVerticalRailway(int i,int j)
+int IsVerticalRailway(int i, int j)
 {
 	if ((j == 0 || j == 4) && (i > 0 && i < 11))
 		return 1;
@@ -199,9 +199,9 @@ int IsEngineerRailway(int i, int j)
 	else
 		return 0;
 }
-int shortestpathtojunqi(int i, int j)
+int getDist(int i, int j, int i2, int j2)
 {
-	return abs(11 - i) + abs(3 - j); //未考虑斜向路线
+	return abs(i2 - i) + abs(j2 - j); //未考虑斜向路线
 }
 /* ************************************************************************ */
 /* 函数功能：双方布局后棋局初始化（完成）										*/
@@ -211,19 +211,28 @@ int shortestpathtojunqi(int i, int j)
 void InitMap(string cOutMessage) //这个是用之前计算好的数据处理，所以是cOutMessage
 {
 	int i, j, k;
-	for (i = 0;i < 6;i++)	//标记对方棋子
-		for (j = 0;j < 5;j++)
+	for (i = 0; i < 6; i++)	//标记对方棋子
+		for (j = 0; j < 5; j++)
 			if (IsMoveCamp(i, j))
 				cMap[i][j] = '0';
 			else
 				cMap[i][j] = 'X';
 	k = 6;
-	for (i = 6;i < 12;i++)	//标记己方棋子
-		for (j = 0;j < 5;j++)
+	for (i = 6; i < 12; i++)	//标记己方棋子
+		for (j = 0; j < 5; j++)
 			if (IsMoveCamp(i, j))
 				cMap[i][j] = '0';
 			else
 				cMap[i][j] = cOutMessage[k++];
+}
+
+pos findJunqi()
+{
+	for (unsigned int i = 0; i < 12; i++)
+		for (unsigned int j = 0; j < 5; j++)
+			if (cMap[i][j] == 'l')
+				return make_tuple(i, j);
+	return make_tuple(-1, -1);
 }
 
 vector<pos> getNearPos(int i, int j)
@@ -237,44 +246,44 @@ vector<pos> getNearPos(int i, int j)
 	//可以左移
 	if (j > 0)
 	{
-		result.push_back(make_tuple(i, j-1));
+		result.push_back(make_tuple(i, j - 1));
 	}
 	//可以右移
 	if (j < 4)
 	{
-		result.push_back(make_tuple(i, j+1));
+		result.push_back(make_tuple(i, j + 1));
 	}
 	//可以后移
 	if (i < 11 && !IsBeforeHill(i, j))
 	{
-		result.push_back(make_tuple(i+1, j));
+		result.push_back(make_tuple(i + 1, j));
 	}
 	//可以左上进行营
 	if (IsMoveCamp(i - 1, j - 1))
 	{
-		result.push_back(make_tuple(i-1, j-1));
+		result.push_back(make_tuple(i - 1, j - 1));
 	}
 	//可以右上进行营
 	if (IsMoveCamp(i - 1, j + 1))
 	{
-		result.push_back(make_tuple(i-1, j+1));
+		result.push_back(make_tuple(i - 1, j + 1));
 	}
 	//可以左下进行营
 	if (IsMoveCamp(i + 1, j - 1))
 	{
-		result.push_back(make_tuple(i+1, j-1));
+		result.push_back(make_tuple(i + 1, j - 1));
 	}
 	//可以右下进行营
 	if (IsMoveCamp(i + 1, j + 1))
 	{
-		result.push_back(make_tuple(i+1, j+1));
+		result.push_back(make_tuple(i + 1, j + 1));
 	}
 	if (IsMoveCamp(i, j))
 	{
-		result.push_back(make_tuple(i-1, j-1));
-		result.push_back(make_tuple(i-1, j+1));
-		result.push_back(make_tuple(i+1, j-1));
-		result.push_back(make_tuple(i+1, j+1));
+		result.push_back(make_tuple(i - 1, j - 1));
+		result.push_back(make_tuple(i - 1, j + 1));
+		result.push_back(make_tuple(i + 1, j - 1));
+		result.push_back(make_tuple(i + 1, j + 1));
 	}
 	return result;
 }

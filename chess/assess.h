@@ -1,6 +1,7 @@
 #pragma once
 #pragma once
 #include "reasoning.h"
+#include "basic.h"
 
 extern float ff1, ff2, ff3, ff4, ff5, ff6;
 float eneMax = 0;
@@ -64,13 +65,16 @@ class assess
 
 	static float valuelast3line(int i, int j)
 	{
-		if (i > 8 && cMap[i][j] != 'l')
+		int junqiI = 0, junqiJ = 0;
+		tie(junqiI, junqiJ) = findJunqi();
+		if (junqiI != -1 && i > 8 && cMap[i][j] != 'l')
 		{
-			return 15 / shortestpathtojunqi(i, j);
+			return 15 / getDist(i, j, junqiI, junqiJ);
 		}
 		else
 			return 0;
 	}
+
 	static float valuecrosshill(int i)
 	{
 		if (i <= 5 && i >= 3)

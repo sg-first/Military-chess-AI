@@ -1,4 +1,4 @@
-//#include "pch.h"
+#include "pch.h"
 #include "basic.h"
 #include "help.h"
 #include "reasoning.h"
