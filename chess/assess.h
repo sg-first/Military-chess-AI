@@ -3,24 +3,23 @@
 #include "reasoning.h"
 #include "basic.h"
 
-extern float ff1, ff2, ff3, ff4, ff5, ff6;
 float eneMax = 0;
 
 class assess
 {
-	static int codeToStrength(int type) //ÓÃÓÚÄ£Äâ×ßÆåµÄ¹Ì¶¨×ÓÁ¦Öµ
+	static int codeToStrength(int type) //ç”¨äºæ¨¡æ‹Ÿèµ°æ£‹çš„å›ºå®šå­åŠ›å€¼
 	{
 		if (type == zhadan)
-			return shizhang; //Õ¨µ¯µÈÓÚÊ¦³¤
+			return shizhang; //ç‚¸å¼¹ç­‰äºå¸ˆé•¿
 		else if (type == dilei)
-			return tuanzhang; //µØÀ×µÈÓÚÍÅ³¤
+			return tuanzhang; //åœ°é›·ç­‰äºå›¢é•¿
 		else
-			return type; //±ğµÄÏÂ±ê¾ÍÊÇ°´ÆåÁ¦´óĞ¡ÅÅµÄ£¬Ö±½Ó·µ»Ø¼´¿É
+			return type; //åˆ«çš„ä¸‹æ ‡å°±æ˜¯æŒ‰æ£‹åŠ›å¤§å°æ’çš„ï¼Œç›´æ¥è¿”å›å³å¯
 	}
-	static int codeToStrength2(int type) //ÓÃÓÚ¾ÖÃæÆÀ¹ÀµÄ¹Ì¶¨×ÓÁ¦Öµ
+	static int codeToStrength2(int type) //ç”¨äºå±€é¢è¯„ä¼°çš„å›ºå®šå­åŠ›å€¼
 	{
 		if (type == junqi)
-			return 12;//¾üÆå×ÓÁ¦ÖµÓ¦Îª0£¬ÔÚ´ó±¾ÓªµÄÆå×Ó-12
+			return 12;//å†›æ£‹å­åŠ›å€¼åº”ä¸º0ï¼Œåœ¨å¤§æœ¬è¥çš„æ£‹å­-12
 		if (type == zhadan || type == shizhang)
 			return 22;
 		if (type == tuanzhang || type == dilei)
@@ -41,21 +40,21 @@ class assess
 			return 30;
 	}
 
-	static float valueLocation(int i, int j) //Æå×ÓËùÔÚÎ»ÖÃÔö¼ÓÖµ
+	static float valueLocation(int i, int j) //æ£‹å­æ‰€åœ¨ä½ç½®å¢åŠ å€¼
 	{
-		if (IsAcrossRailway(i) || IsVerticalRailway(i, j))//ÌúÂ·Ïß+5
+		if (IsAcrossRailway(i) || IsVerticalRailway(i, j))//é“è·¯çº¿+5
 			return 5;
-		else if (IsBaseCamp(i, j))//´ó±¾Óª-12
+		else if (IsBaseCamp(i, j))//å¤§æœ¬è¥-12
 			return -12;
-		else if (IsMyMoveCamp(i, j))//¼º·½ĞĞÓª
+		else if (IsMyMoveCamp(i, j))//å·±æ–¹è¡Œè¥
 			return 8;
-		else if (IsEnemyMoveCamp(i, j)) //¶Ô·½ĞĞÓª
+		else if (IsEnemyMoveCamp(i, j)) //å¯¹æ–¹è¡Œè¥
 			return 10;
 		else
 			return 4;
 	}
 
-	static float valueMotivation(int type) //type±äÁ¿ÀàĞÍ£¿
+	static float valueMotivation(int type) //typeå˜é‡ç±»å‹ï¼Ÿ
 	{
 		if (type != gongbing)
 			return codeToStrength2(type) / 4;
@@ -114,7 +113,7 @@ class assess
 		float myStrength = codeToStrength2(ecOp::codeToType(cMap[i][j]));
 		if (eneMax >= myStrength)
 		{
-			value -= eneMax;//¶Ô·½ÏàÁÚÆå×Ó¸ºÓ°Ïì
+			value -= eneMax;//å¯¹æ–¹ç›¸é‚»æ£‹å­è´Ÿå½±å“
 		}
 		if (friMax > myStrength)
 		{
@@ -123,14 +122,14 @@ class assess
 		return value;
 	}
 public:
-	static int ChessComparisons(char myc, enemyChess* enc) //±È½ÏÎÒ·½ÓëµĞ·½Æå×Ó´óĞ¡£¨0±»µĞ·½³Ô£¬1³ÔµôµĞ·½£¬2¶ÔËÀ£©
+	static int ChessComparisons(char myc, enemyChess* enc) //æ¯”è¾ƒæˆ‘æ–¹ä¸æ•Œæ–¹æ£‹å­å¤§å°ï¼ˆ0è¢«æ•Œæ–¹åƒï¼Œ1åƒæ‰æ•Œæ–¹ï¼Œ2å¯¹æ­»ï¼‰
 	{
 		int mytype = ecOp::codeToType(myc);
 		int encType = enc->isDetermine();
-		//Éæ¼°¹¤±øµØÀ×µÄÌØÅĞ
+		//æ¶‰åŠå·¥å…µåœ°é›·çš„ç‰¹åˆ¤
 		if (mytype == gongbing)
 		{
-			//Ä¿Ç°½öÄÜÔÚÈ·¶¨µĞ·½Æå×ÓÀàĞÍµÄÇé¿öÏÂÌØÅĞÆôÓÃ
+			//ç›®å‰ä»…èƒ½åœ¨ç¡®å®šæ•Œæ–¹æ£‹å­ç±»å‹çš„æƒ…å†µä¸‹ç‰¹åˆ¤å¯ç”¨
 			if (encType == gongbing || encType == zhadan)
 				return 2;
 			else if (encType == dilei)
@@ -147,10 +146,10 @@ public:
 			else
 				return 1;
 		}
-		//Éæ¼°Õ¨µ¯µÄÌØÅĞ
+		//æ¶‰åŠç‚¸å¼¹çš„ç‰¹åˆ¤
 		if (mytype == zhadan || encType == zhadan)
 			return 2;
-		else //²»ÊÇµØÀ×Õ¨µ¯¹¤±øµÄÇé¿ö
+		else //ä¸æ˜¯åœ°é›·ç‚¸å¼¹å·¥å…µçš„æƒ…å†µ
 		{
 			float myStrength = assess::codeToStrength(mytype);
 			float enemyStrength = getChessStrength(enc);
@@ -163,7 +162,7 @@ public:
 		}
 	}
 
-	static float getChessStrength(enemyChess* chess, bool sim = true) //»ñÈ¡µĞ·½Æå×ÓµÄÆåÁ¦Öµ£¬Í¨¹ı¸ÅÂÊ·Ö²¼¼ÆËã
+	static float getChessStrength(enemyChess* chess, bool sim = true) //è·å–æ•Œæ–¹æ£‹å­çš„æ£‹åŠ›å€¼ï¼Œé€šè¿‡æ¦‚ç‡åˆ†å¸ƒè®¡ç®—
 	{
 		if (chess->isDie)
 			return 0;
@@ -174,7 +173,7 @@ public:
 			{
 				float weight;
 				if (sim)
-					weight = assess::codeToStrength(i); //µ±Ç°Î¬¶ÈµÄÈ¨ÖØ
+					weight = assess::codeToStrength(i); //å½“å‰ç»´åº¦çš„æƒé‡
 				else
 					weight = assess::codeToStrength2(i);
 				score += chess->prob[i] * weight;
@@ -184,16 +183,16 @@ public:
 	}
 
 	static std::tuple<float, float, float, float, float, float, float, float>
-		valueEstimation(char cMap[12][5]) //¾ÖÃæÆÀ¹À
+		valueEstimation(char cMap[12][5]) //å±€é¢è¯„ä¼°
 	{
-		float ff1 = 0, ff2 = 0, ff3 = 0, ff4 = 0, ff5 = 0, ff6 = 0, ff7 = 0; //Ã¿Ò»ÏîµÄ×ÜÆÀ·Ö
+		float ff1 = 0, ff2 = 0, ff3 = 0, ff4 = 0, ff5 = 0, ff6 = 0, ff7 = 0; //æ¯ä¸€é¡¹çš„æ€»è¯„åˆ†
 		for (int i = 0; i <= 11; i++)
 		{
 			for (int j = 0; j <= 4; j++)
 			{
 				if (IsMyChess(i, j))
 				{
-					int type = ecOp::codeToType(cMap[i][j]);//cmap×ª»»³ÉtypeÀàĞÍ
+					int type = ecOp::codeToType(cMap[i][j]);//cmapè½¬æ¢æˆtypeç±»å‹
 					if (enemyChess::junqiEne != nullptr && enemyChess::junqiEne->isDie)
 						ff7 += 1000;
 					ff1 += codeToStrength2(type);
