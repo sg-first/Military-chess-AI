@@ -16,13 +16,13 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 		for (int j = 0; j <= 4; j++)
 		{
 			if ((char(cMap[i][j]) >= 'A') && (char(cMap[i][j]) <= 'Z'))
-				content1 += string(1, char(49)) + string(1, char(51)) + " ";
+				content1 += "13 ";
 			else if ((char(cMap[i][j]) == 'j'))
-				content1 += string(1, char(49)) + string(1, char(48)) + " ";
+				content1 += "10 ";
 			else if ((char(cMap[i][j]) == 'k'))
-				content1 += string(1, char(49)) + string(1, char(49)) + " ";
+				content1 += "11 ";
 			else if ((char(cMap[i][j]) == 'l'))
-				content1 += string(1, char(49)) + string(1, char(50)) + " ";
+				content1 += "12 ";
 			else
 				content1 += string(1, char(cMap[i][j]) - 48) + " ";
 		}
@@ -30,18 +30,18 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 	}
 	content1 += "$";
 	writeFile("特种兵的日记.txt", content1);
-	for (int i = 0; i < size(allEnemyChess); i++)		//输出概率表
+	for (unsigned int i = 0; i < allEnemyChess.size(); i++)		//输出概率表
 	{
 		float sum = (allEnemyChess[i]->sum());
-		for (int j = 0; j < 12; j++)
+		for (unsigned int j = 0; j < 12; j++)
 		{
-			content2 += to_string((allEnemyChess[i]->prob[j])/sum) + " ";
+			content2 += to_string((allEnemyChess[i]->prob[j]) / sum) + " ";
 		}
 		content2 += "\n";
 	}
 	content2 += "$";
 	writeFile("特种兵的日记.txt", content2);
-	for (int i = 0; i < size(allEnemyChess); i++)		//输出敌方棋子位置
+	for (unsigned int i = 0; i < allEnemyChess.size(); i++)		//输出敌方棋子位置
 	{
 		content3 += to_string(allEnemyChess[i]->y) + " " + to_string(allEnemyChess[i]->x) + " ";		//此处按照先行后列进行输出
 		content3 += "\n";
