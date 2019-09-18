@@ -48,6 +48,16 @@ private:
 
 	void setProbNum(unsigned int sub, float d)
 	{
+		if (d == 0)
+		{
+			float changeD = prob[sub] / this->sum(); //把设0的概率（原先值）均匀地加到其它棋子上
+			for (enemyChess* i : allEnemyChess)
+			{
+				//如果概率已经为0，changeProbNum里面会进行检测然后不改变，概率值，因此不用在这里考虑
+				if (i != this)
+					i->changeProbNum(sub, -changeD);
+			}
+		}
 		prob[sub] = d;
 	}
 
@@ -55,10 +65,10 @@ private:
     {
 		if (this->isDetermine() == -1)
 		{
-			float d = 1 / thatChess->sum();
+			float fenzi = 1 / thatChess->sum();
 			//对prob的所有维度减去d*prob[i]
 			for (unsigned int i = 0; i < prob.size(); i++)
-				changeProbNum(i, thatChess->prob[i] * d);
+				changeProbNum(i, thatChess->prob[i] * fenzi);
 		}
     }
 
