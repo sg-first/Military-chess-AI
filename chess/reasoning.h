@@ -46,16 +46,35 @@ private:
 		}
     }
 
+	static float getSubSum(unsigned int sub)
+	{
+		//在都已经归一化完的情况下这个才有效
+		float sum = 0;
+		for (enemyChess* i : allEnemyChess)
+			sum += i->prob[sub];
+		return sum;
+	}
+
 	void setProbNum(unsigned int sub, float d)
 	{
 		if (d == 0)
 		{
-			float changeD = prob[sub] / this->sum(); //把设0的概率（原先值）均匀地加到其它棋子上
+			for (enemyChess* i : allEnemyChess) //要做下面的计算得先对所有的归一化
+				i->normalization();
 			for (enemyChess* i : allEnemyChess)
 			{
 				//如果概率已经为0，changeProbNum里面会进行检测然后不改变，概率值，因此不用在这里考虑
 				if (i != this)
-					i->changeProbNum(sub, -changeD);
+				{
+					//X:更新的子是某种棋
+					//F:之前碰的子不是某种棋
+					float PF = 1 - prob[sub];
+					float PX = i->prob[sub];
+					float sum = getSubSum(sub);//所有是某种棋的和
+					float PF_X = PF / (sum - PX);
+					float PX2 = (PF_X * PX) / PF;
+					i->prob[sub] = PX2;
+				}
 			}
 		}
 		prob[sub] = d;
@@ -192,6 +211,16 @@ public:
         this->x = x;
         this->y = y;
     }
+
+	void normalization()
+	{
+		float sum = this->sum();
+		if (sum != 1)
+		{
+			for (float& i : prob)
+				i = i / sum;
+		}
+	}
 
     float certainty() //返回当前棋子类型评估的确定性，整体不确定性用来动态确定search_depth
     {
