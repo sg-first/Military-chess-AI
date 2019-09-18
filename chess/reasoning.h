@@ -63,8 +63,7 @@ private:
 				i->normalization();
 			for (enemyChess* i : allEnemyChess)
 			{
-				//如果概率已经为0，changeProbNum里面会进行检测然后不改变，概率值，因此不用在这里考虑
-				if (i != this)
+				if (i != this && i->prob[sub]>0.5 && this->isDetermine() == -1)
 				{
 					//X:更新的子是某种棋
 					//F:之前碰的子不是某种棋
@@ -159,6 +158,8 @@ public:
             //本棋子死亡，会导致【其它】棋子的概率分布变化
 			if (this->isDetermine() == -1) //死亡的棋子确定意味着之前已经给其它棋子施加了它确定的影响,所以要不确定时
 			{
+				for (enemyChess* i : allEnemyChess) //要做下面的计算得先对所有的归一化
+					i->normalization();
 				for (enemyChess* i : allEnemyChess)
 				{
 					if (i != this)
