@@ -26,19 +26,20 @@ class enemyChess;
 
 vector<enemyChess*> allEnemyChess;
 int aliveChess = 25;
+const float minUpdate = 0.5;
 
 class enemyChess
 {
 private:
     void changeProbNum(unsigned int sub, float d) //改变从属某类棋子的概率分
     {
-		if (prob[sub] > 0.5 && this->isDetermine() == -1) //0.5那个等于也不改所以是大于，而小于是被视为0
+		if (prob[sub] > minUpdate && this->isDetermine() == -1) //minUpdate那个等于也不改所以是大于，而小于是被视为0
 		{
 			prob[sub] -= d;
-			if (prob[sub] < 0.5) //防止导致nan的整体密度1出现
-				prob[sub] = 0.5;
+			if (prob[sub] < minUpdate) //防止导致nan的整体密度1出现
+				prob[sub] = minUpdate;
 			//防止导致nan的整体密度1出现
-			while (sum() <= 6)
+			while (sum() <= 0.6)
 			{
 				for (float &i : prob)
 					i *= 2;
@@ -63,7 +64,7 @@ private:
 				i->normalization();
 			for (enemyChess* i : allEnemyChess)
 			{
-				if (i != this && i->prob[sub]>0.5 && this->isDetermine() == -1)
+				if (i != this && i->prob[sub]>minUpdate && this->isDetermine() == -1)
 				{
 					//X:更新的子是某种棋
 					//F:之前碰的子不是某种棋
@@ -194,12 +195,12 @@ public:
         int type = -1;
         for (unsigned int i = 0;i < prob.size();i++)
         {
-			if (type == -1 && !(prob[i] < 0.5)) //比0.5都小说明肯定是设置的0
+			if (type == -1 && !(prob[i] < minUpdate)) //比minUpdate都小说明肯定是设置的0
 			{
 				type = i;
 				continue;
 			}
-			if (type != -1 && !(prob[i] < 0.5))
+			if (type != -1 && !(prob[i] < minUpdate))
 				return -1;
         }
 		if (type != -1)
