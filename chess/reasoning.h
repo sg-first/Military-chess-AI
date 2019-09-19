@@ -26,18 +26,17 @@ class enemyChess;
 
 vector<enemyChess*> allEnemyChess;
 int aliveChess = 25;
-const float minUpdate = 0.05;
 
 class enemyChess
 {
 private:
-	static float getSubSum(unsigned int sub)
+	static void subNormalization(unsigned int sub)
 	{
-		//在都已经归一化完的情况下这个才有效
 		float sum = 0;
 		for (enemyChess* i : allEnemyChess)
 			sum += i->prob[sub];
-		return sum;
+		for (enemyChess* i : allEnemyChess)
+			i->prob[sub] = (i->prob[sub] / sum) * enemyChess::chessProb[sub];
 	}
 
 	void setProbNum(unsigned int sub, float d)
@@ -48,26 +47,23 @@ private:
 				i->normalization();
 			for (enemyChess* i : allEnemyChess)
 			{
-				if (i != this && i->prob[sub]>minUpdate && this->isDetermine() == -1)
-				{
-					//X:更新的子是某种棋
-					//F:之前碰的子不是某种棋
-					float PF = 1 - prob[sub];
-					//writeFile("特种兵的日记.txt", "PF:"+to_string(PF));
-					float PX = i->prob[sub];
-					float sum = getSubSum(sub);//所有是某种棋的和
-					float PF_X = (sum - (1-PF)) / (sum - PX);
-					//writeFile("特种兵的日记.txt", "sum - PF:" + to_string(sum - PF)+" sum-PX:"+to_string(sum - PX));
-					float PX2 = (PF_X * PX) / PF;
-					i->prob[sub] = PX2;
-				}
+				if (i != this && i->prob[sub]!=0 && this->isDetermine() == -1)
+					i->prob[sub] = i->prob[sub] / (chessProb[sub] - this->prob[sub]);
 			}
 		}
-		prob[sub] = d;
+		this->prob[sub] = d;
+		this->normalization(); //先对自己归一化
+		subNormalization(sub); //再对sub归一化
 	}
 
 public:
-    enemyChess(int x, int y) : x(x), y(y) { this->prob = { 1,3,3,3,2,2,2,2,1,1,3,2 }; }
+	static array<int,12> chessProb;
+    enemyChess(int x, int y) : x(x), y(y) 
+	{ 
+		this->prob = { 1,3,3,3,2,2,2,2,1,1,3,2 };
+		for (float& i : prob)
+			i /= 25;
+	}
     int x;
     int y;
     bool isDie = false;
@@ -140,27 +136,21 @@ public:
             return; //不再处理
         else
         {
-            //新产生确定的棋子，会导致其它棋子的概率分布变化
+			for (float& i : prob)
+				i = 0;
+			setProbNum(sub, 1); //此时相当于已经对概率向量归一化
+            //新产生确定的棋子，会导致其它棋子的概率分布变化（对sub做归一化）
 			for (enemyChess* i : allEnemyChess) //要做下面的计算得先对所有的归一化
 				i->normalization();
             for (enemyChess *i : allEnemyChess)
             {
-				if (i != this && i->prob[sub] > minUpdate && this->isDetermine() == -1)
+				if (i != this && i->prob[sub]!=0 && this->isDetermine() == -1)
 				{
-					i->normalization();
-					//X:更新的子是某种棋
-					//F:之前的子是某种棋
-					float PF = this->prob[sub];
-					float PX = i->prob[sub];
-					float sum = getSubSum(sub);//所有是某种棋的和
-					float PF_X = PF / (sum - PX);
-					float PX2 = (PF_X * PX) / PF;
-					i->prob[sub] = PX2;
+					float k = (enemyChess::chessProb[sub] - this->prob[sub] + 1) / enemyChess::chessProb[sub];
+					i->prob[sub] *= k;
 				}
             }
-			for (float& i : prob)
-				i = 0;
-			setProbNum(sub, 1);
+			subNormalization(sub); //对sub归一化
 			if (sub == junqi) //是军棋要标记上
 				enemyChess::junqiEne = this;
         }
@@ -171,12 +161,12 @@ public:
         int type = -1;
         for (unsigned int i = 0;i < prob.size();i++)
         {
-			if (type == -1 && !(prob[i] < minUpdate)) //比minUpdate都小说明肯定是设置的0
+			if (type == -1 && prob[i] != 0)
 			{
 				type = i;
 				continue;
 			}
-			if (type != -1 && !(prob[i] < minUpdate))
+			if (type != -1 && prob[i] != 0)
 				return -1;
         }
 		if (type != -1)
@@ -240,6 +230,7 @@ public:
     }
 };
 enemyChess* enemyChess::junqiEne;
+array<int, 12> enemyChess::chessProb;
 
 class ecOp
 {
