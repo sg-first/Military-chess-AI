@@ -26,27 +26,11 @@ class enemyChess;
 
 vector<enemyChess*> allEnemyChess;
 int aliveChess = 25;
-const float minUpdate = 0.5;
+const float minUpdate = 0.05;
 
 class enemyChess
 {
 private:
-    void changeProbNum(unsigned int sub, float d) //改变从属某类棋子的概率分
-    {
-		if (prob[sub] > minUpdate && this->isDetermine() == -1) //minUpdate那个等于也不改所以是大于，而小于是被视为0
-		{
-			prob[sub] -= d;
-			if (prob[sub] < minUpdate) //防止导致nan的整体密度1出现
-				prob[sub] = minUpdate;
-			//防止导致nan的整体密度1出现
-			while (sum() <= 0.6)
-			{
-				for (float &i : prob)
-					i *= 2;
-			}
-		}
-    }
-
 	static float getSubSum(unsigned int sub)
 	{
 		//在都已经归一化完的情况下这个才有效
@@ -69,9 +53,11 @@ private:
 					//X:更新的子是某种棋
 					//F:之前碰的子不是某种棋
 					float PF = 1 - prob[sub];
+					//writeFile("特种兵的日记.txt", "PF:"+to_string(PF));
 					float PX = i->prob[sub];
 					float sum = getSubSum(sub);//所有是某种棋的和
-					float PF_X = PF / (sum - PX);
+					float PF_X = (sum - (1-PF)) / (sum - PX);
+					//writeFile("特种兵的日记.txt", "sum - PF:" + to_string(sum - PF)+" sum-PX:"+to_string(sum - PX));
 					float PX2 = (PF_X * PX) / PF;
 					i->prob[sub] = PX2;
 				}
@@ -79,17 +65,6 @@ private:
 		}
 		prob[sub] = d;
 	}
-
-    void otherDie(enemyChess *thatChess) //其它棋子死去导致本棋子概率分布变化
-    {
-		if (this->isDetermine() == -1)
-		{
-			float fenzi = 1 / thatChess->sum();
-			//对prob的所有维度减去d*prob[i]
-			for (unsigned int i = 0; i < prob.size(); i++)
-				changeProbNum(i, thatChess->prob[i] * fenzi);
-		}
-    }
 
 public:
     enemyChess(int x, int y) : x(x), y(y) { this->prob = { 1,3,3,3,2,2,2,2,1,1,3,2 }; }
@@ -156,36 +131,37 @@ public:
             if(!sim)
                 aliveChess--;
 			setPos(-1, -1);
-            //本棋子死亡，会导致【其它】棋子的概率分布变化
-			if (this->isDetermine() == -1) //死亡的棋子确定意味着之前已经给其它棋子施加了它确定的影响,所以要不确定时
-			{
-				for (enemyChess* i : allEnemyChess) //要做下面的计算得先对所有的归一化
-					i->normalization();
-				for (enemyChess* i : allEnemyChess)
-				{
-					if (i != this)
-						i->otherDie(this);
-				}
-			}
         }
     }
 
-    void determine(int type) //确认该棋子为某棋
+    void determine(int sub) //确认该棋子为某棋
     {
         if (isDetermine() != -1) //如果当前棋子已经确定
             return; //不再处理
         else
         {
-            for (float &i : prob)
-                i = 0;
-			setProbNum(type, 1);
             //新产生确定的棋子，会导致其它棋子的概率分布变化
+			for (enemyChess* i : allEnemyChess) //要做下面的计算得先对所有的归一化
+				i->normalization();
             for (enemyChess *i : allEnemyChess)
             {
-                if (i != this)
-                    i->changeProbNum(type, 1);
+				if (i != this && i->prob[sub] > minUpdate && this->isDetermine() == -1)
+				{
+					i->normalization();
+					//X:更新的子是某种棋
+					//F:之前的子是某种棋
+					float PF = this->prob[sub];
+					float PX = i->prob[sub];
+					float sum = getSubSum(sub);//所有是某种棋的和
+					float PF_X = PF / (sum - PX);
+					float PX2 = (PF_X * PX) / PF;
+					i->prob[sub] = PX2;
+				}
             }
-			if (type == junqi) //是军棋要标记上
+			for (float& i : prob)
+				i = 0;
+			setProbNum(sub, 1);
+			if (sub == junqi) //是军棋要标记上
 				enemyChess::junqiEne = this;
         }
     }
