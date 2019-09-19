@@ -231,14 +231,13 @@ public:
         else
         {
             //使用标准差计算不确定度
-            float sum = this->sum();
+			this->normalization();
             float plan[12];
             float average = 0;
             float variance = 0;
             for (unsigned int p = 0; p < prob.size(); p++)
             {
-                plan[p] = this->prob[p] / sum;
-                average = average + plan[p];
+                average = average + this->prob[p];
             }
             average = average / prob.size();
             for (unsigned int p = 0; p < prob.size(); p++)
