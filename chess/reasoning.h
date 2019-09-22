@@ -30,33 +30,50 @@ int aliveChess = 25;
 class enemyChess
 {
 private:
-	static void subNormalization(unsigned int sub)
-	{
-		float sum = 0;
-		for (enemyChess* i : allEnemyChess)
-			sum += i->prob[sub];
-		for (enemyChess* i : allEnemyChess)
-			i->prob[sub] = (i->prob[sub] / sum) * enemyChess::chessProb[sub];
-	}
-
 	void setProbNum(unsigned int sub, float d)
 	{
-		if (d == 0)
+		if (this->prob[sub] != d && isDetermine() == -1)
 		{
 			for (enemyChess* i : allEnemyChess) //要做下面的计算得先对所有的归一化
 				i->normalization();
-			for (enemyChess* i : allEnemyChess)
-			{
-				if (i != this && i->prob[sub]!=0 && this->isDetermine() == -1)
-					i->prob[sub] = i->prob[sub] / (chessProb[sub] - this->prob[sub]);
-			}
+			this->prob[sub] = d;
+			//this->normalization(); //设的不是0就是1，设完不用再归一化了
+			subNormalization(sub); //再对sub归一化
 		}
-		this->prob[sub] = d;
-		this->normalization(); //先对自己归一化
-		subNormalization(sub); //再对sub归一化
+	}
+
+	void outputProb()
+	{
+		string content = "";
+		for (auto i : prob)
+			content += to_string(i) + " ";
+		writeFile("特种兵的日记.txt", content);
 	}
 
 public:
+	static void subNormalization(unsigned int sub)
+	{
+		float sum = 0;
+		float k = enemyChess::chessProb[sub];
+		for (enemyChess* i : allEnemyChess)
+		{
+			if (i->prob[sub] != 1)
+				sum += i->prob[sub];
+			else
+				k -= 1;
+		}
+		for (enemyChess* i : allEnemyChess)
+		{
+			if (i->prob[sub] != 1)
+			{
+				if (sum != 0)
+					i->prob[sub] = i->prob[sub] / sum * k;
+				else
+					i->prob[sub] = 0;
+			}
+		}
+	}
+
 	static array<int,12> chessProb;
     enemyChess(int x, int y) : x(x), y(y) 
 	{ 
@@ -130,27 +147,18 @@ public:
         }
     }
 
-    void determine(int sub) //确认该棋子为某棋
+    void determine(unsigned int sub) //确认该棋子为某棋
     {
         if (isDetermine() != -1) //如果当前棋子已经确定
             return; //不再处理
         else
         {
-			for (float& i : prob)
-				i = 0;
-			setProbNum(sub, 1); //此时相当于已经对概率向量归一化
-            //新产生确定的棋子，会导致其它棋子的概率分布变化（对sub做归一化）
-			for (enemyChess* i : allEnemyChess) //要做下面的计算得先对所有的归一化
-				i->normalization();
-            for (enemyChess *i : allEnemyChess)
-            {
-				if (i != this && i->prob[sub]!=0 && this->isDetermine() == -1)
-				{
-					float k = (enemyChess::chessProb[sub] - this->prob[sub] + 1) / enemyChess::chessProb[sub];
-					i->prob[sub] *= k;
-				}
-            }
-			subNormalization(sub); //对sub归一化
+			for (unsigned int i = 0; i < prob.size(); i++)
+			{
+				if (i != sub)
+					setProbNum(i, 0);
+			}
+			setProbNum(sub, 1); //此时相当于已经对概率向量归一化（里面会调用subNormalization）
 			if (sub == junqi) //是军棋要标记上
 				enemyChess::junqiEne = this;
         }
@@ -158,20 +166,20 @@ public:
 
     int isDetermine() //返回当前棋子的确定类型，-1为不确定
     {
-        int type = -1;
+        int sub = -1;
         for (unsigned int i = 0;i < prob.size();i++)
         {
-			if (type == -1 && prob[i] != 0)
+			if (sub == -1 && prob[i] != 0)
 			{
-				type = i;
+				sub = i;
 				continue;
 			}
-			if (type != -1 && prob[i] != 0)
+			if (sub != -1 && prob[i] != 0)
 				return -1;
         }
-		if (type != -1)
-			setProbNum(type, 1);
-        return type;
+		if (sub != -1)
+			prob[sub] = 1;
+        return sub;
     }
 
     void setPos(int x, int y)

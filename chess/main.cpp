@@ -30,13 +30,10 @@ void outputAllneeds()		//此输出函数使用$号作为分割表格的标志
 	}
 	content1 += "$";
 	writeFile("特种兵的日记.txt", content1);
-	for (unsigned int i = 0; i < allEnemyChess.size(); i++)		//输出概率表
+	for (enemyChess* i : allEnemyChess)		//输出概率表
 	{
-		float sum = (allEnemyChess[i]->sum());
-		for (unsigned int j = 0; j < 12; j++)
-		{
-			content2 += to_string((allEnemyChess[i]->prob[j]) / sum) + " ";
-		}
+		for (unsigned int j = 0; j < enemyChess::chessProb.size(); j++)
+			content2 += to_string(i->prob[j]) + " ";
 		content2 += "\n";
 	}
 	content2 += "$";
@@ -202,6 +199,11 @@ void FreshMap(char* cInMessage, string cOutMessage)
 		}
 		}
 	}
+
+	for (enemyChess* j : allEnemyChess)
+		j->normalization();
+	for (unsigned int j = 0; j < enemyChess::chessProb.size(); j++)
+		enemyChess::subNormalization(j);
 }
 /* ************************************************************************ */
 /* 函数功能：根据INFO指令,返回参赛队名（完成）									*/

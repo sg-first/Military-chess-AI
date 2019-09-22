@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "reasoning.h"
 #include "basic.h"
 
